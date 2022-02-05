@@ -1,6 +1,8 @@
 # typesafe-dynamodb
 
-This is a type-only library for replacing the AWS SDK for DynamoDB's `getItem`, `putItem`, `deleteItem` and `query` API calls with type-safe alternatives that are aware of the data in your Tables and also adaptive to the semantics of the API request, such as understanding the effect of a `ProjectionExpression`.
+[![npm version](https://badge.fury.io/js/typesafe-dynamodb.svg)](https://badge.fury.io/js/typesafe-dynamodb)
+
+`typesafe-dynamodb` is a type-only library for replacing the type signatures of the AWS SDK's DynamoDB client - specifically, it provides alternative `getItem`, `putItem`, `deleteItem` and `query` API methods that are aware of the data in your Tables and also adaptive to the semantics of the API request, such as understanding the effect of a `ProjectionExpression` on the returned data.
 
 ## Installation
 
