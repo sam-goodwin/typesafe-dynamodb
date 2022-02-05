@@ -52,11 +52,9 @@ export async function foo() {
           S: "",
         },
       },
-      ProjectionExpression: "attr, list[0]",
+      ProjectionExpression: "attr",
     })
     .promise();
-
-  get.Item?.list?.L[0].M.pk;
 
   await table
     .putItem({

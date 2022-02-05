@@ -44,7 +44,11 @@ Same for the `Item` in the response:
 
 ![typesafe GetItemOutput Item](img/get-item-response.gif)
 
-### Filter of AttributesToGet
+### Filter result with ProjectionExpression
+
+![typesafe ProjectionExpression](img/get-item-projection.gif)
+
+### Filter with AttributesToGet
 
 If you specify `AttributesToGet`, then the returned type only contains those properties.
 
