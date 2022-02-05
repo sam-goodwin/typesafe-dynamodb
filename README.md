@@ -1,6 +1,8 @@
 # typesafe-dynamodb
 
-This is a type-only library that can be used to augment a standard AWS SDK v2 client library for AWS DynamoDB.
+This is a type-only library for enhancing the AWS SDK for DynamoDB's `getItem`, `putItem`, `deleteItem` and `query` API calls with type-safe alternatives that are aware of the data in your Tables and also adaptive to the semantics of the API request.
+
+To use `typesafe-dynamodb`, there is no need to change anything about your existing code. Because it is type-only, simple cast an instance of `AWS.DynamoDB` to `TypeSafeDynamoDB<T, HashKey, RangeKey>`, where `T` is a TypeScript type definition describing the data in the table, `HashKey` is the name fo the Hash Key attribute, and `RangeKey` is the name of the Range Key attribuyte.
 
 ## Installation
 
@@ -30,8 +32,6 @@ import { DynamoDB } from "aws-sdk";
 const dynamodb = new DynamoDB() as TypeSafeDynamoDB<Record, "key", "sort">;
 ```
 
-The `TypeSafeDynamoDB` type replaces the `getItem`, `putItem`, `deleteItem` and `query` API calls with an implementation that understands the structure of data in the table.
-
 ## Features
 
 ### Type-aware Input and Output
@@ -45,6 +45,8 @@ Same for the `Item` in the response:
 ![typesafe GetItemOutput Item](img/get-item-response.gif)
 
 ### Filter result with ProjectionExpression
+
+The `ProjectionExpression` field is parsed and applied to filter the returned type of `getItem` and `query`.
 
 ![typesafe ProjectionExpression](img/get-item-projection.gif)
 
