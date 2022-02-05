@@ -1,8 +1,6 @@
 # typesafe-dynamodb
 
-This is a type-only library for enhancing the AWS SDK for DynamoDB's `getItem`, `putItem`, `deleteItem` and `query` API calls with type-safe alternatives that are aware of the data in your Tables and also adaptive to the semantics of the API request.
-
-To use `typesafe-dynamodb`, there is no need to change anything about your existing code. Because it is type-only, simple cast an instance of `AWS.DynamoDB` to `TypeSafeDynamoDB<T, HashKey, RangeKey>`, where `T` is a TypeScript type definition describing the data in the table, `HashKey` is the name fo the Hash Key attribute, and `RangeKey` is the name of the Range Key attribuyte.
+This is a type-only library for replacing the AWS SDK for DynamoDB's `getItem`, `putItem`, `deleteItem` and `query` API calls with type-safe alternatives that are aware of the data in your Tables and also adaptive to the semantics of the API request, such as understanding the effect of a `ProjectionExpression`.
 
 ## Installation
 
@@ -11,6 +9,14 @@ npm install --save-dev typesafe-dynamodb
 ```
 
 ## Usage
+
+To use `typesafe-dynamodb`, there is no need to change anything about your existing runtime code. simply cast an instance of `AWS.DynamoDB` to the `TypeSafeDynamoDB<T, HashKey, RangeKey>` and use the client as normal.
+
+```ts
+import { DynamoDB } from "aws-sdk";
+
+const dynamodb = new DynamoDB();
+```
 
 Declare standard TypeScript types to represent the data in your table:
 
@@ -24,13 +30,15 @@ interface Record {
 }
 ```
 
-Then, cast your `DynamoDB` table instance to `TypeSafeDynamoDB`;
+Then, cast the `DynamoDB` client instance to `TypeSafeDynamoDB`;
 
 ```ts
-import { DynamoDB } from "aws-sdk";
-
-const dynamodb = new DynamoDB() as TypeSafeDynamoDB<Record, "key", "sort">;
+const typesafe = dynamoDB as TypeSafeDynamoDB<Record, "key", "sort">;
 ```
+
+`Record` is a TypeScript type definition describing the data in the table, `"key"` is the name of the Hash Key attribute, and `"sort"` is the name of the Range Key attribute.
+
+Then, use the client as you normally would, except now with intelligent type hints and validations.
 
 ## Features
 
