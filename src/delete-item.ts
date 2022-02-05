@@ -3,7 +3,7 @@ import { ToAttributeMap } from "./attribute-value";
 import {
   ExpressionAttributeNames,
   ExpressionAttributeValues,
-} from "./expression";
+} from "./expression-attributes";
 
 export type DeleteItemInput<
   Item extends object,
