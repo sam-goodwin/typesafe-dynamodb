@@ -1,6 +1,10 @@
 # typesafe-dynamodb
 
-This is a type-only library that can be used to augment a standard AWS SDK v2 client library for AWS DynamoDB.
+[![npm version](https://badge.fury.io/js/typesafe-dynamodb.svg)](https://badge.fury.io/js/typesafe-dynamodb)
+
+`typesafe-dynamodb` is a type-only library which replaces the type signatures of the AWS SDK's DynamoDB client. It substitutes `getItem`, `putItem`, `deleteItem` and `query` API methods with type-safe alternatives that are aware of the data in your tables and also adaptive to the semantics of the API request, e.g. by validating `ExpressionAttributeNames` and `ExpressionAttributeValues` contain all the values used in a `ConditionExpression` string, or by understanding the effect of a `ProjectionExpression` on the returned data type.
+
+The end goal is to provide types that have total understanding of the AWS DynamoDB API and enable full utilization of the TypeScript type system for modeling complex DynmaoDB tables, such as the application of union types and template string literals for single-table designs.
 
 ## Installation
 
@@ -10,7 +14,15 @@ npm install --save-dev typesafe-dynamodb
 
 ## Usage
 
-Declare standard TypeScript types to represent the data in your table:
+To use `typesafe-dynamodb`, there is no need to change anything about your existing runtime code. It is purely type definitions, so you only need to cast an instance of `AWS.DynamoDB` to the `TypeSafeDynamoDB<T, HashKey, RangeKey>` interface and use the client as normal, except now you can enjoy a dynamic, type-safe experience in your IDE instead.
+
+```ts
+import { DynamoDB } from "aws-sdk";
+
+const client = new DynamoDB();
+```
+
+Start by declaring a standard TypeScript interface which describes the structure of data in your DynamoDB Table:
 
 ```ts
 interface Record {
@@ -22,15 +34,15 @@ interface Record {
 }
 ```
 
-Then, cast your `DynamoDB` table instance to `TypeSafeDynamoDB`;
+Then, cast the `DynamoDB` client instance to `TypeSafeDynamoDB`;
 
 ```ts
-import { DynamoDB } from "aws-sdk";
-
-const dynamodb = new DynamoDB() as TypeSafeDynamoDB<Record, "key", "sort">;
+const typesafeClient: TypeSafeDynamoDB<Record, "key", "sort"> = client;
 ```
 
-The `TypeSafeDynamoDB` type replaces the `getItem`, `putItem`, `deleteItem` and `query` API calls with an implementation that understands the structure of data in the table.
+`"key"` is the name of the Hash Key attribute, and `"sort"` is the name of the Range Key attribute.
+
+Finally, use the client as you normally would, except now with intelligent type hints and validations.
 
 ## Features
 
@@ -44,7 +56,13 @@ Same for the `Item` in the response:
 
 ![typesafe GetItemOutput Item](img/get-item-response.gif)
 
-### Filter of AttributesToGet
+### Filter result with ProjectionExpression
+
+The `ProjectionExpression` field is parsed and applied to filter the returned type of `getItem` and `query`.
+
+![typesafe ProjectionExpression](img/get-item-projection.gif)
+
+### Filter with AttributesToGet
 
 If you specify `AttributesToGet`, then the returned type only contains those properties.
 

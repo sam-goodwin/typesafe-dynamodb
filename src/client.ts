@@ -10,10 +10,25 @@ export interface TypeSafeDynamoDB<
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined = undefined
 > extends Omit<DynamoDB, "getItem" | "deleteItem" | "putItem" | "query"> {
-  getItem<AttributesToGet extends keyof Item | undefined>(
-    params: GetItemInput<Item, PartitionKey, RangeKey, AttributesToGet>,
-    callback?: Callback<GetItemOutput<Item, AttributesToGet>, AWSError>
-  ): Request<GetItemOutput<Item, AttributesToGet>, AWSError>;
+  getItem<
+    AttributesToGet extends keyof Item | undefined = undefined,
+    ProjectionExpression extends string | undefined = undefined
+  >(
+    params: GetItemInput<
+      Item,
+      PartitionKey,
+      RangeKey,
+      AttributesToGet,
+      ProjectionExpression
+    >,
+    callback?: Callback<
+      GetItemOutput<Item, AttributesToGet, ProjectionExpression>,
+      AWSError
+    >
+  ): Request<
+    GetItemOutput<Item, AttributesToGet, ProjectionExpression>,
+    AWSError
+  >;
 
   deleteItem<
     ConditionExpression extends string | undefined,

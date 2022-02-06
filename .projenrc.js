@@ -7,6 +7,8 @@ const project = new typescript.TypeScriptProject({
   eslintOptions: {
     ignorePatterns: ["**"],
   },
+  gitignore: [".DS_Store"],
   releaseToNpm: true,
 });
+
 project.synth();
