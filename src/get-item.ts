@@ -1,10 +1,11 @@
 import type { DynamoDB } from "aws-sdk";
 import { ToAttributeMap } from "./attribute-value";
-import { KeyAttribute } from "./key";
+import { KeyAttribute, KeyAttributeToObject } from "./key";
 import { ApplyProjection } from "./projection-expression";
 
 export interface GetItemInput<
   Item extends object,
+  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined,
   AttributesToGet extends keyof Item | undefined,
@@ -13,23 +14,30 @@ export interface GetItemInput<
     DynamoDB.GetItemInput,
     "Key" | "AttributesToGet" | "ProjectionExpression"
   > {
-  Key: KeyAttribute<Item, PartitionKey, RangeKey>;
-  readonly AttributesToGet?: readonly AttributesToGet[];
-  readonly ProjectionExpression?: ProjectionExpression;
+  Key: Key;
+  AttributesToGet?: readonly AttributesToGet[] | AttributesToGet[];
+  ProjectionExpression?: ProjectionExpression;
 }
 export interface GetItemOutput<
   Item extends object,
+  Key extends KeyAttribute<Item, any, any>,
   AttributesToGet extends keyof Item | undefined,
   ProjectionExpression extends string | undefined
 > extends Omit<DynamoDB.GetItemOutput, "Item"> {
   Item?: ToAttributeMap<
     undefined extends AttributesToGet
       ? undefined extends ProjectionExpression
-        ? Item
+        ? Extract<Item, KeyAttributeToObject<Item, Key>>
         : Extract<
-            ApplyProjection<Item, Extract<ProjectionExpression, string>>,
+            ApplyProjection<
+              Extract<Item, KeyAttributeToObject<Item, Key>>,
+              Extract<ProjectionExpression, string>
+            >,
             object
           >
-      : Pick<Item, Extract<AttributesToGet, keyof Item>>
+      : Pick<
+          Extract<Item, KeyAttributeToObject<Item, Key>>,
+          Extract<AttributesToGet, keyof Item>
+        >
   >;
 }

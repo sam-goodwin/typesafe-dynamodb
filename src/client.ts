@@ -2,6 +2,7 @@ import type { AWSError, DynamoDB, Request } from "aws-sdk";
 import { Callback } from "./callback";
 import { DeleteItemInput, DeleteItemOutput } from "./delete-item";
 import { GetItemInput, GetItemOutput } from "./get-item";
+import { KeyAttribute } from "./key";
 import { PutItemInput, PutItemOutput } from "./put-item";
 import { QueryInput, QueryOutput } from "./query";
 
@@ -11,22 +12,24 @@ export interface TypeSafeDynamoDB<
   RangeKey extends keyof Item | undefined = undefined
 > extends Omit<DynamoDB, "getItem" | "deleteItem" | "putItem" | "query"> {
   getItem<
+    Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
     AttributesToGet extends keyof Item | undefined = undefined,
     ProjectionExpression extends string | undefined = undefined
   >(
     params: GetItemInput<
       Item,
+      Key,
       PartitionKey,
       RangeKey,
       AttributesToGet,
       ProjectionExpression
     >,
     callback?: Callback<
-      GetItemOutput<Item, AttributesToGet, ProjectionExpression>,
+      GetItemOutput<Item, Key, AttributesToGet, ProjectionExpression>,
       AWSError
     >
   ): Request<
-    GetItemOutput<Item, AttributesToGet, ProjectionExpression>,
+    GetItemOutput<Item, Key, AttributesToGet, ProjectionExpression>,
     AWSError
   >;
 

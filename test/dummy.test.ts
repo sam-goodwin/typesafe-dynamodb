@@ -133,3 +133,70 @@ export async function foo() {
   a6.tuple[0];
   a6.tuple[1];
 }
+
+const TableName = "test";
+
+interface User<UserID extends string = string> {
+  PK: `USER#${UserID}`;
+  SK: `#PROFILE#${UserID}`;
+  Username: string;
+  FullName: string;
+  Email: string;
+  CreatedAt: Date;
+  Address: string;
+}
+
+interface Order<
+  UserID extends string = string,
+  OrderID extends string = string
+> {
+  PK: `USER#${UserID}`;
+  SK: `ORDER#${OrderID}`;
+  Username: string;
+  OrderID: string;
+  Status: "PLACED" | "SHIPPED";
+  CreatedAt: Date;
+  Address: string;
+}
+
+declare const client: TypeSafeDynamoDB<User | Order, "PK", "SK">;
+
+export async function getProfile(userId: String) {
+  const profile = await client
+    .getItem({
+      TableName,
+      Key: {
+        PK: {
+          S: `USER#${userId}`,
+        },
+        SK: {
+          S: `#PROFILE#${userId}`,
+        },
+      },
+    })
+    .promise();
+
+  profile.Item?.FullName;
+  // @ts-expect-error
+  profile.Item?.OrderID;
+}
+
+export async function getOrder(userId: string, orderId: string) {
+  const order = await client
+    .getItem({
+      TableName,
+      Key: {
+        PK: {
+          S: `USER#${userId}`,
+        },
+        SK: {
+          S: `ORDER#${orderId}`,
+        },
+      },
+    })
+    .promise();
+
+  order.Item?.OrderID;
+  // @ts-expect-error
+  order.Item?.FullName;
+}
