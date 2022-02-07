@@ -177,7 +177,7 @@ export async function getProfile(userId: String) {
     .promise();
 
   profile.Item?.FullName;
-  // @ts-expect-error - OrderID is only available when SK is prefixed with `#ORDER`
+  // @ts-expect-error
   profile.Item?.OrderID;
 }
 
@@ -197,6 +197,6 @@ export async function getOrder(userId: string, orderId: string) {
     .promise();
 
   order.Item?.OrderID;
-  // @ts-expect-error - FullName is only available when SK is prefixed with `#PROFILE`
+  // @ts-expect-error
   order.Item?.FullName;
 }
