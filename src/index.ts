@@ -4,6 +4,6 @@ export * from "./client";
 export * from "./expression-attributes";
 export * from "./get-item";
 export * from "./key";
-export * from "./projection-expression";
+export * from "./projection";
 export * from "./put-item";
 export * from "./query";

@@ -4,6 +4,8 @@ import { AlphaNumeric } from "./letter";
 export type ExpressionAttributeValues<Expression extends string | undefined> =
   undefined extends Expression
     ? {}
+    : ParseConditionExpressionValues<Expression> extends never
+    ? {}
     : {
         ExpressionAttributeValues: {
           [name in ParseConditionExpressionValues<Expression> as `:${name}`]: AttributeValue;
@@ -12,6 +14,8 @@ export type ExpressionAttributeValues<Expression extends string | undefined> =
 
 export type ExpressionAttributeNames<Expression extends string | undefined> =
   undefined extends Expression
+    ? {}
+    : ParseConditionExpressionNames<Expression> extends never
     ? {}
     : {
         ExpressionAttributeNames: {

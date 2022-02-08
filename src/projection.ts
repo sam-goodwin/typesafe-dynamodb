@@ -1,47 +1,13 @@
+import {
+  ArrayIndex,
+  Identifier,
+  NameRef,
+  NumberLiteral,
+  Expr,
+  PropRef,
+  ValueRef,
+} from "./expression";
 import { AlphaNumeric } from "./letter";
-
-export type ProjectionExpr =
-  | ArrayIndex
-  | Identifier
-  | NumberLiteral
-  | NameRef
-  | PropRef
-  | ValueRef;
-//
-
-export interface NameRef<Name extends string = string> {
-  kind: "name-ref";
-  name: Name;
-}
-export interface ValueRef<Name extends string = string> {
-  kind: "value-ref";
-  name: Name;
-}
-export interface Identifier<I extends string = string> {
-  kind: "identifier";
-  name: I;
-}
-
-export interface NumberLiteral<N extends string = string> {
-  kind: "index";
-  number: N;
-}
-export interface PropRef<
-  Expr extends ProjectionExpr = any,
-  Id extends Identifier = any
-> {
-  kind: "prop-ref";
-  expr: Expr;
-  name: Id;
-}
-export interface ArrayIndex<
-  List extends ProjectionExpr = any,
-  Number extends NumberLiteral | ValueRef = NumberLiteral | ValueRef
-> {
-  kind: "array-index";
-  list: List;
-  number: Number;
-}
 
 export type ParseProjectionExpression<Text extends string> = Parse<
   Text,
@@ -49,63 +15,63 @@ export type ParseProjectionExpression<Text extends string> = Parse<
   undefined
 >;
 
-type AsExpr<T> = Extract<T, ProjectionExpr>;
+type AsExpr<T> = Extract<T, Expr>;
 
 type Parse<
   Text extends string,
-  Expressions extends ProjectionExpr[],
-  Expr extends ProjectionExpr | undefined
+  Expressions extends Expr[],
+  Exp extends Expr | undefined
 > = Text extends `.${infer Rest}`
-  ? Expr extends ProjectionExpr
-    ? Parse<Rest, Expressions, PropRef<Expr, Identifier<"">>>
+  ? Exp extends Expr
+    ? Parse<Rest, Expressions, PropRef<Exp, Identifier<"">>>
     : never
   : Text extends `[:${infer Rest}`
-  ? Parse<Rest, Expressions, ArrayIndex<AsExpr<Expr>, ValueRef<"">>>
+  ? Parse<Rest, Expressions, ArrayIndex<AsExpr<Exp>, ValueRef<"">>>
   : Text extends `[${infer Rest}`
-  ? Parse<Rest, Expressions, ArrayIndex<AsExpr<Expr>, NumberLiteral<"">>>
+  ? Parse<Rest, Expressions, ArrayIndex<AsExpr<Exp>, NumberLiteral<"">>>
   : Text extends `]${infer Rest}`
-  ? Parse<Rest, Expressions, Expr>
+  ? Parse<Rest, Expressions, Exp>
   : Text extends `]`
-  ? Concat<Expressions, Expr>
+  ? Concat<Expressions, Exp>
   : Text extends `${"," | " "}${infer Rest}`
-  ? Parse<Rest, Concat<Expressions, Expr>, undefined>
+  ? Parse<Rest, Concat<Expressions, Exp>, undefined>
   : Text extends `#${infer Rest}`
-  ? Parse<Rest, Concat<Expressions, Expr>, NameRef<Rest>>
+  ? Parse<Rest, Concat<Expressions, Exp>, NameRef<Rest>>
   : Text extends `:${infer Rest}`
-  ? Parse<Rest, Concat<Expressions, Expr>, ValueRef<Rest>>
+  ? Parse<Rest, Concat<Expressions, Exp>, ValueRef<Rest>>
   : Text extends `${AlphaNumeric}${string}`
   ? Text extends `${infer char}${infer Rest}`
-    ? Parse<Rest, Expressions, Append<Expr, char>>
+    ? Parse<Rest, Expressions, Append<Exp, char>>
     : never
   : Text extends `${AlphaNumeric}${string}`
   ? Text extends `${infer char}${infer Rest}`
-    ? Parse<Rest, Expressions, Append<Expr, char>>
+    ? Parse<Rest, Expressions, Append<Exp, char>>
     : never
-  : Concat<Expressions, Expr>;
+  : Concat<Expressions, Exp>;
 
 type Concat<
-  Expressions extends ProjectionExpr[],
-  CurrentExpr extends ProjectionExpr | undefined
+  Expressions extends Expr[],
+  CurrentExpr extends Expr | undefined
 > = undefined extends CurrentExpr
   ? Expressions
-  : [...Expressions, Extract<CurrentExpr, ProjectionExpr>];
+  : [...Expressions, Extract<CurrentExpr, Expr>];
 
 type Append<
-  Expr extends ProjectionExpr | undefined,
+  Exp extends Expr | undefined,
   char extends string
-> = Expr extends undefined
+> = Exp extends undefined
   ? Identifier<char>
-  : Expr extends Identifier<infer Name>
+  : Exp extends Identifier<infer Name>
   ? Identifier<`${Name}${char}`>
-  : Expr extends NumberLiteral<infer Name>
+  : Exp extends NumberLiteral<infer Name>
   ? NumberLiteral<`${Name}${char}`>
-  : Expr extends NameRef<infer Name>
+  : Exp extends NameRef<infer Name>
   ? NameRef<`${Name}${char}`>
-  : Expr extends ValueRef<infer Name>
+  : Exp extends ValueRef<infer Name>
   ? ValueRef<`${Name}${char}`>
-  : Expr extends PropRef<infer expr, infer name>
+  : Exp extends PropRef<infer expr, infer name>
   ? PropRef<expr, Extract<Append<name, char>, Identifier>>
-  : Expr extends ArrayIndex<infer expr, infer idx>
+  : Exp extends ArrayIndex<infer expr, infer idx>
   ? ArrayIndex<expr, Extract<Append<idx, char>, NumberLiteral>>
   : never;
 
@@ -115,27 +81,27 @@ export type ApplyProjection<T, Expr extends string> = Flatten<
   >
 >;
 
-type ApplyProjectionExpr<T, Expr extends ProjectionExpr> = T extends undefined
+type ApplyProjectionExpr<T, Exp extends Expr> = T extends undefined
   ? never
-  : Expr extends PropRef<infer expr, infer i>
+  : Exp extends PropRef<infer expr, infer i>
   ? {
       [p in keyof ApplyProjectionExpr<T, expr>]: ApplyProjectionExpr<
         ApplyProjectionExpr<T, expr>[p],
         i
       >;
     }
-  : Expr extends ArrayIndex<infer expr, infer i>
+  : Exp extends ArrayIndex<infer expr, infer i>
   ? {
       [p in keyof ApplyProjectionExpr<T, expr>]: ApplyProjectionExpr<
         ApplyProjectionExpr<T, expr>[keyof ApplyProjectionExpr<T, expr>],
         i
       >;
     }
-  : Expr extends Identifier<infer I>
+  : Exp extends Identifier<infer I>
   ? I extends keyof T
     ? Pick<T, I>
     : never
-  : Expr extends NumberLiteral<infer I>
+  : Exp extends NumberLiteral<infer I>
   ? ParseInt<I> extends keyof T
     ? Pick<T, ParseInt<I>>
     : never

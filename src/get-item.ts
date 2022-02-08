@@ -1,7 +1,7 @@
 import type { DynamoDB } from "aws-sdk";
 import { ToAttributeMap } from "./attribute-value";
 import { KeyAttribute, KeyAttributeToObject } from "./key";
-import { ApplyProjection } from "./projection-expression";
+import { ApplyProjection } from "./projection";
 
 export interface GetItemInput<
   Item extends object,
