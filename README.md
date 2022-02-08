@@ -56,6 +56,45 @@ Same for the `Item` in the response:
 
 ![typesafe GetItemOutput Item](img/get-item-response.gif)
 
+### Single Table Design
+
+Below are two `interface` declarations, representing two types of data stored in a single DynamoDB table - `User` and `Order`. Single table design in DynamoDB is achieved by creating "composite keys", e.g. `USER#${UserID}`. In TypeScript, we use template literal types to encode this in the Type System.
+
+```ts
+interface User<UserID extends string = string> {
+  PK: `USER#${UserID}`;
+  SK: `#PROFILE#${UserID}`;
+  Username: string;
+  FullName: string;
+  Email: string;
+  CreatedAt: Date;
+  Address: string;
+}
+
+interface Order<
+  UserID extends string = string,
+  OrderID extends string = string
+> {
+  PK: `USER#${UserID}`;
+  SK: `ORDER#${OrderID}`;
+  Username: string;
+  OrderID: string;
+  Status: "PLACED" | "SHIPPED";
+  CreatedAt: Date;
+  Address: string;
+}
+```
+
+With these two types defined, you can now use a union type to declare a `TypeSafeDynamoDB` instance aware of the two types of data in your tables:
+
+```ts
+const client: TypeSafeDynamoDB<User | Order, "PK", "SK">;
+```
+
+When making calls such as `getItem`, TypeScript will narrow the returned data type to the corresponding type based on the structure of the `Key` in your request:
+
+![narrowed getItem](img/get-order.png)
+
 ### Filter result with ProjectionExpression
 
 The `ProjectionExpression` field is parsed and applied to filter the returned type of `getItem` and `query`.
