@@ -3,7 +3,12 @@ const project = new typescript.TypeScriptProject({
   defaultReleaseBranch: "main",
   name: "typesafe-dynamodb",
 
-  devDeps: ["aws-sdk"],
+  deps: [
+    "aws-sdk",
+    "@aws-sdk/client-dynamodb",
+    "@aws-sdk/smithy-client",
+    "@aws-sdk/types",
+  ],
   eslintOptions: {
     ignorePatterns: ["**"],
   },

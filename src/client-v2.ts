@@ -6,7 +6,7 @@ import { KeyAttribute } from "./key";
 import { PutItemInput, PutItemOutput } from "./put-item";
 import { QueryInput, QueryOutput } from "./query";
 
-export interface TypeSafeDynamoDB<
+export interface TypeSafeDynamoDBv2<
   Item extends object,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined = undefined
@@ -34,10 +34,18 @@ export interface TypeSafeDynamoDB<
   >;
 
   deleteItem<
+    Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
     ConditionExpression extends string | undefined,
     ReturnValue extends DynamoDB.ReturnValue = "NONE"
   >(
-    params: DeleteItemInput<Item, ConditionExpression, ReturnValue>,
+    params: DeleteItemInput<
+      Item,
+      PartitionKey,
+      RangeKey,
+      Key,
+      ConditionExpression,
+      ReturnValue
+    >,
     callback?: Callback<DeleteItemOutput<Item, ReturnValue>, AWSError>
   ): Request<DeleteItemOutput<Item, ReturnValue>, AWSError>;
 

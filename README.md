@@ -14,7 +14,11 @@ npm install --save-dev typesafe-dynamodb
 
 ## Usage
 
-To use `typesafe-dynamodb`, there is no need to change anything about your existing runtime code. It is purely type definitions, so you only need to cast an instance of `AWS.DynamoDB` to the `TypeSafeDynamoDB<T, HashKey, RangeKey>` interface and use the client as normal, except now you can enjoy a dynamic, type-safe experience in your IDE instead.
+This library contains type definitions for both AWS SDK v2 (`aws-sdk`) and AWS SDK v3 (`@aws-sdk/client-dynamodb`);
+
+### AWS SDK v2
+
+To use `typesafe-dynamodb` with the AWS SDK v2, there is no need to change anything about your existing runtime code. It is purely type definitions, so you only need to cast an instance of `AWS.DynamoDB` to the `TypeSafeDynamoDBv2<T, HashKey, RangeKey>` interface and use the client as normal, except now you can enjoy a dynamic, type-safe experience in your IDE instead.
 
 ```ts
 import { DynamoDB } from "aws-sdk";
@@ -37,12 +41,56 @@ interface Record {
 Then, cast the `DynamoDB` client instance to `TypeSafeDynamoDB`;
 
 ```ts
-const typesafeClient: TypeSafeDynamoDB<Record, "key", "sort"> = client;
+import { TypeSafeDynamoDBv2 } from "typesafe-dynamodb/lib/client-v3";
+
+const typesafeClient: TypeSafeDynamoDBv2<Record, "key", "sort"> = client;
 ```
 
 `"key"` is the name of the Hash Key attribute, and `"sort"` is the name of the Range Key attribute.
 
 Finally, use the client as you normally would, except now with intelligent type hints and validations.
+
+### AWS SDK v3
+
+#### Option 1 - DynamoDB (similar to SDK v2)
+
+`DynamoDB` is an almost identical implementation to the AWS SDK v2, except with minor changes such as returning a `Promise` by default. It is a convenient way of using the DynamoDB API, except it is not optimized for tree-shaking (for that, see Option 2).
+
+To override the types, follow a similar method to v2, except by importing TypeSafeDynamoDBv3 (instead of v2):
+
+```ts
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { TypeSafeDynamoDBv2 } from "typesafe-dynamodb/lib/client-v3";
+
+const client = new DynamoDB({..});
+const typesafeClient: TypeSafeDynamoDBv3<Record, "key", "sort"> = client;
+```
+
+#### Option 2 - DynamoDBClient (a Command-Response interface optimized for tree-shaking)
+
+`DynamoDBClient` is a generic interface with a single method, `send`. To invoke an API, call `send` with an instance of the API's corresponding `Command`.
+
+This option is designed for optimal tree-shaking when bundling code, ensuring that the bundle only includes code for the APIs your application uses.
+
+For this option, type-safety is achieved by declaring your own commands and then calling the standard `DynamoDBClient`:
+
+```ts
+interface MyType {
+  key: string;
+  sort: number;
+  list: string[];
+}
+
+const client = new DynamoDBClient({});
+
+const GetMyTypeCommand = TypeSafeGetItemCommand<MyType, "key", "sort">();
+
+await client.send(
+  new GetMyTypeCommand({
+    ..
+  })
+);
+```
 
 ## Features
 

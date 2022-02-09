@@ -6,7 +6,8 @@ test("dummy", () => {
 
 import { DynamoDB } from "aws-sdk";
 
-import { TypeSafeDynamoDB, ApplyProjection } from "../src";
+import { TypeSafeDynamoDBv2 } from "../src/client-v2";
+import { ApplyProjection } from "../src/projection";
 
 export interface MyItem {
   pk: string;
@@ -15,7 +16,11 @@ export interface MyItem {
   list?: MyItem[];
 }
 
-const table = new DynamoDB() as unknown as TypeSafeDynamoDB<MyItem, "pk", "sk">;
+const table = new DynamoDB() as unknown as TypeSafeDynamoDBv2<
+  MyItem,
+  "pk",
+  "sk"
+>;
 
 export async function foo() {
   const response = await table
@@ -159,7 +164,7 @@ interface Order<
   Address: string;
 }
 
-declare const client: TypeSafeDynamoDB<User | Order, "PK", "SK">;
+declare const client: TypeSafeDynamoDBv2<User | Order, "PK", "SK">;
 
 export async function getProfile(userId: String) {
   const profile = await client
