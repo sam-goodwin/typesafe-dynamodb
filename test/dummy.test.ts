@@ -59,6 +59,20 @@ export async function foo() {
     .promise();
 
   await table
+    .deleteItem({
+      TableName: "",
+      Key: {
+        pk: {
+          S: "",
+        },
+        sk: {
+          S: "",
+        },
+      },
+    })
+    .promise();
+
+  await table
     .putItem({
       TableName: "",
       Item: {

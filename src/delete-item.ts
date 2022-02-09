@@ -4,9 +4,13 @@ import {
   ExpressionAttributeNames,
   ExpressionAttributeValues,
 } from "./expression-attributes";
+import { KeyAttribute } from "./key";
 
 export type DeleteItemInput<
   Item extends object,
+  PartitionKey extends keyof Item,
+  RangeKey extends keyof Item | undefined,
+  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
   ConditionExpression extends string | undefined,
   ReturnValue extends DynamoDB.ReturnValue = "NONE"
 > = Omit<
@@ -19,7 +23,7 @@ export type DeleteItemInput<
 > &
   ExpressionAttributeNames<ConditionExpression> &
   ExpressionAttributeValues<ConditionExpression> & {
-    Item: ToAttributeMap<Item>;
+    Key: Key;
     ReturnValues?: ReturnValue;
     ConditionExpression?: ConditionExpression;
   };

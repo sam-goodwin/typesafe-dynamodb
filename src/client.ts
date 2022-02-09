@@ -34,10 +34,18 @@ export interface TypeSafeDynamoDB<
   >;
 
   deleteItem<
+    Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
     ConditionExpression extends string | undefined,
     ReturnValue extends DynamoDB.ReturnValue = "NONE"
   >(
-    params: DeleteItemInput<Item, ConditionExpression, ReturnValue>,
+    params: DeleteItemInput<
+      Item,
+      PartitionKey,
+      RangeKey,
+      Key,
+      ConditionExpression,
+      ReturnValue
+    >,
     callback?: Callback<DeleteItemOutput<Item, ReturnValue>, AWSError>
   ): Request<DeleteItemOutput<Item, ReturnValue>, AWSError>;
 
