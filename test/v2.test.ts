@@ -219,3 +219,25 @@ export async function getOrder(userId: string, orderId: string) {
   // @ts-expect-error
   order.Item?.FullName;
 }
+
+export async function batchGet(userId: string, orderId: string) {
+  const response = await client
+    .batchGetItem({
+      RequestItems: {
+        MyTable: {
+          Keys: [
+            {
+              PK: { S: `USER#${userId}` },
+              SK: { S: `ORDER#${orderId}` },
+            },
+          ],
+        },
+      },
+      ProjectionExpression: "Username,Status",
+    })
+    .promise();
+
+  response.Responses!.MyTable[0].Username;
+  // @ts-expect-error
+  response.Responses!.MyTable[0].Address;
+}

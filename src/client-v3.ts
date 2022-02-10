@@ -3,6 +3,7 @@ import type {
   ReturnValue as DynamoDBReturnValue,
 } from "@aws-sdk/client-dynamodb";
 import { MetadataBearer } from "@aws-sdk/types";
+import { BatchGetItemInput, BatchGetItemOutput } from "./batch-get-item";
 import { Callback } from "./callback";
 import { DeleteItemInput, DeleteItemOutput } from "./delete-item";
 import { GetItemInput, GetItemOutput } from "./get-item";
@@ -14,7 +15,10 @@ export interface TypeSafeDynamoDBv3<
   Item extends object,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined = undefined
-> extends Omit<DynamoDB, "getItem" | "deleteItem" | "putItem" | "query"> {
+> extends Omit<
+    DynamoDB,
+    "getItem" | "deleteItem" | "putItem" | "query" | "batchGetItem"
+  > {
   getItem<
     Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
     AttributesToGet extends keyof Item | undefined = undefined,
@@ -126,5 +130,42 @@ export interface TypeSafeDynamoDBv3<
       AttributesToGet
     >,
     callback: Callback<QueryOutput<Item, AttributesToGet> & MetadataBearer, any>
+  ): void;
+
+  batchGetItem<
+    Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
+    AttributesToGet extends keyof Item | undefined = undefined,
+    ProjectionExpression extends string | undefined = undefined
+  >(
+    params: BatchGetItemInput<
+      Item,
+      Key,
+      PartitionKey,
+      RangeKey,
+      AttributesToGet,
+      ProjectionExpression
+    >
+  ): Promise<
+    BatchGetItemOutput<Item, Key, AttributesToGet, ProjectionExpression> &
+      MetadataBearer
+  >;
+
+  batchGetItem<
+    Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
+    AttributesToGet extends keyof Item | undefined = undefined,
+    ProjectionExpression extends string | undefined = undefined
+  >(
+    params: BatchGetItemInput<
+      Item,
+      Key,
+      PartitionKey,
+      RangeKey,
+      AttributesToGet,
+      ProjectionExpression
+    >,
+    callback: Callback<
+      BatchGetItemOutput<Item, Key, AttributesToGet, ProjectionExpression>,
+      any
+    >
   ): void;
 }

@@ -1,8 +1,8 @@
-import "jest";
-
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { TypeSafeGetItemCommand } from "../src/get-item-command";
+import "jest";
+import { TypeSafeBatchGetItemCommand } from "../src/batch-get-item-command";
 import { TypeSafeDeleteItemCommand } from "../src/delete-item-command";
+import { TypeSafeGetItemCommand } from "../src/get-item-command";
 import { TypeSafePutItemCommand } from "../src/put-item-command";
 import { TypeSafeQueryCommand } from "../src/query-command";
 
@@ -18,6 +18,11 @@ const PutItemCommand = TypeSafePutItemCommand<MyType>();
 const GetItemCommand = TypeSafeGetItemCommand<MyType, "key", "sort">();
 const DeleteItemCommand = TypeSafeDeleteItemCommand<MyType, "key", "sort">();
 const QueryCommand = TypeSafeQueryCommand<MyType>();
+const BatchGetItemCommand = TypeSafeBatchGetItemCommand<
+  MyType,
+  "key",
+  "sort"
+>();
 
 it("dummy", () => {
   expect(1).toBe(1);
@@ -41,6 +46,20 @@ export async function foo() {
   get.Item?.key;
   // @ts-expect-error
   get.Item?.list;
+
+  const batchGet = await client.send(
+    new BatchGetItemCommand({
+      RequestItems: {
+        TableName: {
+          Keys: [{ key: { S: "" }, sort: { N: "1" } }],
+        },
+      },
+      ProjectionExpression: "sort, list[0]",
+    })
+  );
+  batchGet.Responses!.TableName[0].sort;
+  // @ts-expect-error
+  batchGet.Responses!.TableName[0].list[1];
 
   const put = await client.send(
     new PutItemCommand({

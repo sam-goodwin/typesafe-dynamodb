@@ -1,4 +1,5 @@
 import type { AWSError, DynamoDB, Request } from "aws-sdk";
+import { BatchGetItemInput, BatchGetItemOutput } from "./batch-get-item";
 import { Callback } from "./callback";
 import { DeleteItemInput, DeleteItemOutput } from "./delete-item";
 import { GetItemInput, GetItemOutput } from "./get-item";
@@ -10,7 +11,10 @@ export interface TypeSafeDynamoDBv2<
   Item extends object,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined = undefined
-> extends Omit<DynamoDB, "getItem" | "deleteItem" | "putItem" | "query"> {
+> extends Omit<
+    DynamoDB,
+    "getItem" | "deleteItem" | "putItem" | "query" | "batchGetItem"
+  > {
   getItem<
     Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
     AttributesToGet extends keyof Item | undefined = undefined,
@@ -70,4 +74,26 @@ export interface TypeSafeDynamoDBv2<
     >,
     callback?: Callback<QueryOutput<Item, AttributesToGet>, AWSError>
   ): Request<QueryOutput<Item, AttributesToGet>, AWSError>;
+
+  batchGetItem<
+    Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
+    AttributesToGet extends keyof Item | undefined = undefined,
+    ProjectionExpression extends string | undefined = undefined
+  >(
+    params: BatchGetItemInput<
+      Item,
+      Key,
+      PartitionKey,
+      RangeKey,
+      AttributesToGet,
+      ProjectionExpression
+    >,
+    callback?: Callback<
+      BatchGetItemOutput<Item, Key, AttributesToGet, ProjectionExpression>,
+      AWSError
+    >
+  ): Request<
+    BatchGetItemOutput<Item, Key, AttributesToGet, ProjectionExpression>,
+    AWSError
+  >;
 }
