@@ -41,7 +41,7 @@ interface Record {
 Then, cast the `DynamoDB` client instance to `TypeSafeDynamoDB`;
 
 ```ts
-import { TypeSafeDynamoDBv2 } from "typesafe-dynamodb/lib/client-v3";
+import { TypeSafeDynamoDBv2 } from "typesafe-dynamodb/lib/client-v2";
 
 const typesafeClient: TypeSafeDynamoDBv2<Record, "key", "sort"> = client;
 ```
@@ -60,7 +60,7 @@ To override the types, follow a similar method to v2, except by importing TypeSa
 
 ```ts
 import { DynamoDB } from "@aws-sdk/client-dynamodb";
-import { TypeSafeDynamoDBv2 } from "typesafe-dynamodb/lib/client-v3";
+import { TypeSafeDynamoDBv3 } from "typesafe-dynamodb/lib/client-v3";
 
 const client = new DynamoDB({..});
 const typesafeClient: TypeSafeDynamoDBv3<Record, "key", "sort"> = client;
