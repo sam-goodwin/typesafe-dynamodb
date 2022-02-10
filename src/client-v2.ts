@@ -6,7 +6,7 @@ import { KeyAttribute } from "./key";
 import { PutItemInput, PutItemOutput } from "./put-item";
 import { QueryInput, QueryOutput } from "./query";
 
-export interface TypeSafeDynamoDB<
+export interface TypeSafeDynamoDBv2<
   Item extends object,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined = undefined
