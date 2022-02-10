@@ -143,6 +143,22 @@ When making calls such as `getItem`, TypeScript will narrow the returned data ty
 
 ![narrowed getItem](img/get-order.png)
 
+### Type-Safe DynamoDBStreamEvent
+
+Leverage your data types in Lambda Functions attached to the DynamoDB Table Stream:
+
+```ts
+import { DynamoDBStreamEvent } from "typesafe-dynamodb/lib/stream-event";
+
+export async function handle(
+  event: DynamoDBStreamEvent<User | Order, "PK", "SK", "KEYS_ONLY">
+) {
+  ..
+}
+```
+
+The event's type is derived from the data type and the the `StreamViewType`, e.g. `"NEW_IMAGE" | "OLD_IMAGE" | "KEYS_ONLY" | "NEW_AND_OLD_IMAGES"`.
+
 ### Filter result with ProjectionExpression
 
 The `ProjectionExpression` field is parsed and applied to filter the returned type of `getItem` and `query`.

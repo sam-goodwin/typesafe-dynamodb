@@ -8,6 +8,7 @@ const project = new typescript.TypeScriptProject({
     "@aws-sdk/client-dynamodb",
     "@aws-sdk/smithy-client",
     "@aws-sdk/types",
+    "@types/aws-lambda",
   ],
   eslintOptions: {
     ignorePatterns: ["**"],
