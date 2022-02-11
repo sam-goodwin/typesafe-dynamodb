@@ -598,6 +598,13 @@
     "@aws-sdk/types" "3.50.0"
     tslib "^2.3.0"
 
+"@aws-sdk/util-dynamodb@^3.50.0":
+  version "3.50.0"
+  resolved "https://registry.yarnpkg.com/@aws-sdk/util-dynamodb/-/util-dynamodb-3.50.0.tgz#a0388f40a9c391e4b59bae392e4010a41ddda848"
+  integrity sha512-6ufU74Z8532YFWjXyeQZbe2cnCrWdpf7ezSbrFlQ+iXnX+1RmKZXFhRgHLXugHWXSRAsFau3sMB+6tC0vb9fsw==
+  dependencies:
+    tslib "^2.3.0"
+
 "@aws-sdk/util-hex-encoding@3.49.0":
   version "3.49.0"
   resolved "https://registry.yarnpkg.com/@aws-sdk/util-hex-encoding/-/util-hex-encoding-3.49.0.tgz#04d153679a1b14b2fecb4c38175d79b4a8fa8002"

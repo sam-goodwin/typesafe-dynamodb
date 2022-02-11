@@ -8,6 +8,24 @@ export type AttributeValue =
   | L<ArrayLike<AttributeValue>>
   | M<Record<string, AttributeValue>>;
 
+export type AttributeMap = Record<string, AttributeValue>;
+
+export type NativeBinaryAttribute =
+  | ArrayBuffer
+  | BigInt64Array
+  | BigUint64Array
+  | Buffer
+  | DataView
+  | Float32Array
+  | Float64Array
+  | Int16Array
+  | Int32Array
+  | Int8Array
+  | Uint16Array
+  | Uint32Array
+  | Uint8Array
+  | Uint8ClampedArray;
+
 export type ToAttributeMap<T extends object> = ToAttributeValue<T>["M"];
 
 /**
@@ -23,8 +41,12 @@ export type ToAttributeValue<T> = T extends undefined
   ? S<T>
   : T extends number
   ? N<T>
-  : T extends Date
+  : // this behavior is not defined by https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html
+  // should it be a number of string?
+  T extends Date
   ? N<number>
+  : T extends NativeBinaryAttribute
+  ? B
   : T extends ArrayLike<unknown>
   ? L<{
       [i in keyof T]: i extends "length" ? T[i] : ToAttributeValue<T[i]>;
