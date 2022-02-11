@@ -29,28 +29,23 @@ export const unmarshall: <
 >(
   item: Item,
   options?: UnmarshallOptions
-) => Unmarshall<Item, UnmarshallOptions> = _unmarshall as any;
-
-export type Unmarshall<
-  Attributes extends AttributeMap,
-  Options extends unmarshallOptions | undefined
-> = {
-  [prop in keyof Attributes]: UnmarshallValue<Attributes[prop], Options>;
-};
+) => {
+  [prop in keyof Item]: Unmarshall<Item[prop], UnmarshallOptions>;
+} = _unmarshall as any;
 
 export interface NumberValue<N extends number> {
   value: `${N}`;
 }
 
-export type UnmarshallValue<
+export type Unmarshall<
   T,
-  Options extends unmarshallOptions | undefined
+  UnmarshallOptions extends unmarshallOptions | undefined
 > = T extends S<infer s>
   ? s
   : T extends B
   ? NativeBinaryAttribute
   : T extends N<infer n>
-  ? Exclude<Options, undefined>["wrapNumbers"] extends true
+  ? Exclude<UnmarshallOptions, undefined>["wrapNumbers"] extends true
     ? NumberValue<n>
     : n
   : T extends Date
@@ -59,8 +54,13 @@ export type UnmarshallValue<
   ? {
       [i in keyof Items]: i extends "length"
         ? Items[i]
-        : UnmarshallValue<Items[i], Options>;
+        : Unmarshall<Items[i], UnmarshallOptions>;
     }
   : T extends M<infer Attributes>
-  ? Unmarshall<Attributes, Options>
+  ? {
+      [prop in keyof Attributes]: Unmarshall<
+        Attributes[prop],
+        UnmarshallOptions
+      >;
+    }
   : never;
