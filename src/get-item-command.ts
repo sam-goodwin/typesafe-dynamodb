@@ -18,17 +18,17 @@ export function TypeSafeGetItemCommand<
 >(
   input: GetItemInput<
     Item,
-    Key,
     PartitionKey,
     RangeKey,
+    Key,
     AttributesToGet,
     ProjectionExpression
   >
 ) => GetItemCommand<
   Item,
-  Key,
   PartitionKey,
   RangeKey,
+  Key,
   AttributesToGet,
   ProjectionExpression
 > {
@@ -37,17 +37,17 @@ export function TypeSafeGetItemCommand<
 
 interface GetItemCommand<
   Item extends object,
-  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined,
+  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
   AttributesToGet extends keyof Item | undefined,
   ProjectionExpression extends string | undefined
 > extends Command<
     GetItemInput<
       Item,
-      Key,
       PartitionKey,
       RangeKey,
+      Key,
       AttributesToGet,
       ProjectionExpression
     >,

@@ -5,12 +5,16 @@ import { GetItemInput, GetItemOutput } from "./get-item";
 import { KeyAttribute } from "./key";
 import { PutItemInput, PutItemOutput } from "./put-item";
 import { QueryInput, QueryOutput } from "./query";
+import { UpdateItemInput, UpdateItemOutput } from "./update-item";
 
 export interface TypeSafeDynamoDBv2<
   Item extends object,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined = undefined
-> extends Omit<DynamoDB, "getItem" | "deleteItem" | "putItem" | "query"> {
+> extends Omit<
+    DynamoDB,
+    "getItem" | "deleteItem" | "putItem" | "query" | "updateItem"
+  > {
   getItem<
     Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
     AttributesToGet extends keyof Item | undefined = undefined,
@@ -18,9 +22,9 @@ export interface TypeSafeDynamoDBv2<
   >(
     params: GetItemInput<
       Item,
-      Key,
       PartitionKey,
       RangeKey,
+      Key,
       AttributesToGet,
       ProjectionExpression
     >,
@@ -56,6 +60,30 @@ export interface TypeSafeDynamoDBv2<
     params: PutItemInput<Item, ConditionExpression, ReturnValue>,
     callback?: Callback<PutItemOutput<Item, ReturnValue>, AWSError>
   ): Request<PutItemOutput<Item, ReturnValue>, AWSError>;
+
+  updateItem<
+    Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
+    UpdateExpression extends string,
+    ConditionExpression extends string | undefined,
+    ReturnValue extends DynamoDB.ReturnValue = "NONE"
+  >(
+    params: UpdateItemInput<
+      Item,
+      PartitionKey,
+      RangeKey,
+      Key,
+      UpdateExpression,
+      ConditionExpression,
+      ReturnValue
+    >,
+    callback?: Callback<
+      UpdateItemOutput<Item, PartitionKey, RangeKey, Key, ReturnValue>,
+      AWSError
+    >
+  ): Request<
+    UpdateItemOutput<Item, PartitionKey, RangeKey, Key, ReturnValue>,
+    AWSError
+  >;
 
   query<
     KeyConditionExpression extends string | undefined = undefined,

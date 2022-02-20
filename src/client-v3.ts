@@ -22,9 +22,9 @@ export interface TypeSafeDynamoDBv3<
   >(
     params: GetItemInput<
       Item,
-      Key,
       PartitionKey,
       RangeKey,
+      Key,
       AttributesToGet,
       ProjectionExpression
     >
@@ -40,9 +40,9 @@ export interface TypeSafeDynamoDBv3<
   >(
     params: GetItemInput<
       Item,
-      Key,
       PartitionKey,
       RangeKey,
+      Key,
       AttributesToGet,
       ProjectionExpression
     >,

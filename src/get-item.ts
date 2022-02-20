@@ -1,13 +1,14 @@
 import type { DynamoDB } from "aws-sdk";
 import { ToAttributeMap } from "./attribute-value";
-import { KeyAttribute, KeyAttributeToObject } from "./key";
+import { KeyAttribute } from "./key";
+import { Narrow } from "./narrow";
 import { ApplyProjection } from "./projection";
 
 export interface GetItemInput<
   Item extends object,
-  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined,
+  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
   AttributesToGet extends keyof Item | undefined,
   ProjectionExpression extends string | undefined
 > extends Omit<
@@ -27,17 +28,14 @@ export interface GetItemOutput<
   Item?: ToAttributeMap<
     undefined extends AttributesToGet
       ? undefined extends ProjectionExpression
-        ? Extract<Item, KeyAttributeToObject<Item, Key>>
+        ? Narrow<Item, Key>
         : Extract<
             ApplyProjection<
-              Extract<Item, KeyAttributeToObject<Item, Key>>,
+              Narrow<Item, Key>,
               Extract<ProjectionExpression, string>
             >,
             object
           >
-      : Pick<
-          Extract<Item, KeyAttributeToObject<Item, Key>>,
-          Extract<AttributesToGet, keyof Item>
-        >
+      : Pick<Narrow<Item, Key>, Extract<AttributesToGet, keyof Item>>
   >;
 }
