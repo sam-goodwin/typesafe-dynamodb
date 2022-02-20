@@ -352,7 +352,7 @@ export async function updateOrder(userId: string, orderId: string) {
     })
     .promise();
 
-  returnUpdatedOld.Attributes?.OrderID?.S;
+  narrowedType.Attributes?.OrderID?.S;
   // @ts-expect-error - FullName does not exist on order
-  returnUpdatedOld.Attributes?.FullName?.S;
+  narrowedType.Attributes?.FullName?.S;
 }
