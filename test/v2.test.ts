@@ -22,7 +22,7 @@ const table = new DynamoDB() as unknown as TypeSafeDynamoDBv2<
   "sk"
 >;
 
-export async function foo() {
+export async function foo(userId: string) {
   const response = await table
     .query({
       TableName: "TableName",
@@ -53,7 +53,7 @@ export async function foo() {
       TableName: "",
       Key: {
         pk: {
-          S: "",
+          S: `USER#${userId}`,
         },
         sk: {
           S: "",
@@ -68,7 +68,7 @@ export async function foo() {
       TableName: "",
       Key: {
         pk: {
-          S: "",
+          S: `USER#${userId}`,
         },
         sk: {
           S: "",
@@ -218,4 +218,141 @@ export async function getOrder(userId: string, orderId: string) {
   order.Item?.OrderID;
   // @ts-expect-error
   order.Item?.FullName;
+}
+
+export async function updateOrder(userId: string, orderId: string) {
+  const defaultBehavior = await client
+    .updateItem({
+      TableName: "",
+      Key: {
+        PK: {
+          S: `USER#${userId}`,
+        },
+        SK: {
+          S: `ORDER#${orderId}`,
+        },
+      },
+      UpdateExpression: "#k = :v",
+      ExpressionAttributeNames: {
+        "#k": "list",
+      },
+      ExpressionAttributeValues: {
+        ":v": {
+          S: "val",
+        },
+        ":v2": {
+          S: "val2",
+        },
+      },
+      ConditionExpression: "#k = :v2",
+    })
+    .promise();
+  // @ts-expect-error - default ReturnValues is None
+  defaultBehavior.Attributes?.key;
+
+  const returnNone = await client
+    .updateItem({
+      TableName: "",
+      Key: {
+        PK: {
+          S: `USER#${userId}`,
+        },
+        SK: {
+          S: `ORDER#${orderId}`,
+        },
+      },
+      UpdateExpression: "a = 1",
+      ReturnValues: "NONE",
+    })
+    .promise();
+  // @ts-expect-error - nothing is Returned
+  returnNone.Attributes.PK.S;
+
+  const returnAllNew = await client
+    .updateItem({
+      TableName: "",
+      Key: {
+        PK: {
+          S: `USER#${userId}`,
+        },
+        SK: {
+          S: `ORDER#${orderId}`,
+        },
+      },
+      UpdateExpression: "a = 1",
+      ReturnValues: "ALL_NEW",
+    })
+    .promise();
+  returnAllNew.Attributes?.PK;
+
+  const returnAllOld = await client
+    .updateItem({
+      TableName: "",
+      Key: {
+        PK: {
+          S: `USER#${userId}`,
+        },
+        SK: {
+          S: `ORDER#${orderId}`,
+        },
+      },
+      UpdateExpression: "a = 1",
+      ReturnValues: "ALL_OLD",
+    })
+    .promise();
+  returnAllOld.Attributes?.PK?.S;
+
+  const returnUpdatedNew = await client
+    .updateItem({
+      TableName: "",
+      Key: {
+        PK: {
+          S: `USER#${userId}`,
+        },
+        SK: {
+          S: `ORDER#${orderId}`,
+        },
+      },
+      UpdateExpression: "a = 1",
+      ReturnValues: "UPDATED_NEW",
+    })
+    .promise();
+  returnUpdatedNew.Attributes?.PK?.S;
+
+  const returnUpdatedOld = await client
+    .updateItem({
+      TableName: "",
+      Key: {
+        PK: {
+          S: `USER#${userId}`,
+        },
+        SK: {
+          S: `ORDER#${orderId}`,
+        },
+      },
+      UpdateExpression: "a = 1",
+      ReturnValues: "UPDATED_OLD",
+    })
+    .promise();
+  returnUpdatedOld.Attributes?.PK?.S;
+
+  const narrowedType = await client
+    .updateItem({
+      TableName: "",
+      Key: {
+        PK: {
+          S: `USER#${userId}`,
+        },
+        SK: {
+          S: `ORDER#${orderId}`,
+        },
+      },
+      UpdateExpression: "a = 1",
+      ReturnValues: "UPDATED_OLD",
+    })
+    .promise();
+
+  returnUpdatedOld.Attributes?.OrderID?.S;
+  // @ts-expect-error - FullName does not exist on order
+  returnUpdatedOld.Attributes?.FullName?.S;
 }
