@@ -231,9 +231,9 @@ export async function batchGet(userId: string, orderId: string) {
               SK: { S: `ORDER#${orderId}` },
             },
           ],
+          ProjectionExpression: "Username,Status",
         },
       },
-      ProjectionExpression: "Username,Status",
     })
     .promise();
 

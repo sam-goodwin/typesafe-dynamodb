@@ -52,9 +52,9 @@ export async function foo() {
       RequestItems: {
         TableName: {
           Keys: [{ key: { S: "" }, sort: { N: "1" } }],
+          ProjectionExpression: "sort, list[0]",
         },
       },
-      ProjectionExpression: "sort, list[0]",
     })
   );
   batchGet.Responses!.TableName[0].sort;
