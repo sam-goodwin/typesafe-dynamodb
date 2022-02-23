@@ -1,16 +1,8 @@
 import type { DynamoDB } from "aws-sdk";
 import { ToAttributeMap } from "./attribute-value";
 import { KeyAttribute, KeyAttributeToObject } from "./key";
+import { Narrow } from "./narrow";
 import { ApplyProjection } from "./projection";
-
-// export interface KeysAndAttributes<
-//   Item extends object,
-//   PartitionKey extends keyof Item,
-//   RangeKey extends keyof Item | undefined,
-//   Key extends KeyAttribute<Item, PartitionKey, RangeKey>
-// > extends Omit<DynamoDB.KeysAndAttributes, "Keys"> {
-//   Keys: Key[];
-// }
 
 export interface BatchGetItemInput<
   Item extends object,
@@ -40,15 +32,12 @@ type ResponseItem<
       ? Extract<Item, KeyAttributeToObject<Item, Key>>
       : Extract<
           ApplyProjection<
-            Extract<Item, KeyAttributeToObject<Item, Key>>,
+            Narrow<Item, Key>,
             Extract<ProjectionExpression, string>
           >,
           object
         >
-    : Pick<
-        Extract<Item, KeyAttributeToObject<Item, Key>>,
-        Extract<AttributesToGet, keyof Item>
-      >
+    : Pick<Narrow<Item, Key>, Extract<AttributesToGet, keyof Item>>
 >;
 
 export interface BatchGetItemOutput<
