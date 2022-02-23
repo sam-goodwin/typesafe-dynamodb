@@ -180,3 +180,89 @@ If you add a `ConditionExpression` in `putItem`, you will be prompted for any `#
 Same is true for a `query`:
 
 ![typesafe query KeyConditionExpression and Filter](img/query-expression.gif)
+
+### Marshall a JS Object to an AttributeMap
+
+A better type definition `@aws-sdk/util-dynamodb`'s `marshall` function is provided which maintains the typing information of the value passed to it and also adapts the output type based on the input `marshallOptions`
+
+Given an object literal:
+
+```ts
+const myObject = {
+  key: "key",
+  sort: 123,
+  binary: new Uint16Array([1]),
+  buffer: Buffer.from("buffer", "utf8"),
+  optional: 456,
+  list: ["hello", "world"],
+  record: {
+    key: "nested key",
+    sort: 789,
+  },
+} as const;
+```
+
+Call the `marshall` function to convert it to an AttributeMap which maintains the exact structure in the type system:
+
+```ts
+import { marshall } from "typesafe-dynamodb/lib/marshall";
+// marshall the above JS object to its corresponding AttributeMap
+const marshalled = marshall(myObject)
+
+// typing information is carried across exactly, including literal types
+const marshalled: {
+  readonly key: S<"key">;
+  readonly sort: N<123>;
+  readonly binary: B;
+  readonly buffer: B;
+  readonly optional: N<456>;
+  readonly list: L<readonly [S<"hello">, S<"world">]>;
+  readonly record: M<...>;
+}
+```
+
+### Unmarshall an AttributeMap back to a JS Object
+
+A better type definition `@aws-sdk/util-dynamodb`'s `unmarshall` function is provided which maintains the typing information of the value passed to it and also adapts the output type based on the input `unmarshallOptions`.
+
+```ts
+import { unmarshall } from "typesafe-dynamodb/lib/marshall";
+
+// unmarshall the AttributeMap back into the original object
+const unmarshalled = unmarshall(marshalled);
+
+// it maintains the literal typing information (as much as possible)
+const unmarshalled: {
+  readonly key: "key";
+  readonly sort: 123;
+  readonly binary: NativeBinaryAttribute;
+  readonly buffer: NativeBinaryAttribute;
+  readonly optional: 456;
+  readonly list: readonly [...];
+  readonly record: Unmarshall<...>;
+}
+```
+
+If you specify `{wrapNumbers: true}`, then all `number` types will be wrapped as `{ value: string }`:
+
+```ts
+const unmarshalled = unmarshall(marshalled, {
+  wrapNumbers: true,
+});
+
+// numbers are wrapped in { value: string } because of `wrappedNumbers: true`
+unmarshalled.sort.value; // string
+
+// it maintains the literal typing information (as much as possible)
+const unmarshalled: {
+  readonly key: "key";
+  // notice how the number is wrapped in the `NumberValue` type?
+  // this is because `wrapNumbers: true`
+  readonly sort: NumberValue<123>;
+  readonly binary: NativeBinaryAttribute;
+  readonly buffer: NativeBinaryAttribute;
+  readonly optional: NumberValue<...>;
+  readonly list: readonly [...];
+  readonly record: Unmarshall<...>;
+};
+```
