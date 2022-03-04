@@ -5,7 +5,7 @@ import {
 import type { Command } from "@aws-sdk/smithy-client";
 import { QueryInput, QueryOutput } from "./query";
 import { MetadataBearer } from "@aws-sdk/types";
-import { JsonFormat } from "./format";
+import { JsonFormat } from "./json-format";
 
 export function TypeSafeQueryCommand<
   Item extends object,

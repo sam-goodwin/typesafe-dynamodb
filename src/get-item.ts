@@ -1,5 +1,5 @@
 import type { DynamoDB } from "aws-sdk";
-import { JsonFormat, FormatObject } from "./format";
+import { JsonFormat, FormatObject } from "./json-format";
 import { TableKey } from "./key";
 import { Narrow } from "./narrow";
 import { ApplyProjection } from "./projection";

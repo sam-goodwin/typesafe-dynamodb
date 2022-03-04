@@ -4,7 +4,7 @@ import { MetadataBearer } from "@aws-sdk/types";
 import { ProjectionExpression } from "aws-sdk/clients/dynamodb";
 import { Callback } from "./callback";
 import { DeleteItemInput, DeleteItemOutput } from "./delete-item";
-import { JsonFormat } from "./format";
+import { JsonFormat } from "./json-format";
 import { GetItemInput, GetItemOutput } from "./get-item";
 import { TableKey } from "./key";
 import { PutItemInput, PutItemOutput } from "./put-item";

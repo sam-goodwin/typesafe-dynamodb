@@ -6,7 +6,7 @@ import type { Command } from "@aws-sdk/smithy-client";
 import { TableKey } from "./key";
 import { GetItemInput, GetItemOutput } from "./get-item";
 import { MetadataBearer } from "@aws-sdk/types";
-import { JsonFormat } from "./format";
+import { JsonFormat } from "./json-format";
 
 export function TypeSafeGetItemCommand<
   Item extends object,

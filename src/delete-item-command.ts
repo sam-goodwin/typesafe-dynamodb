@@ -7,7 +7,7 @@ import type { Command } from "@aws-sdk/smithy-client";
 import { DeleteItemInput, DeleteItemOutput } from "./delete-item";
 import { MetadataBearer } from "@aws-sdk/types";
 import { TableKey } from "./key";
-import { JsonFormat } from "./format";
+import { JsonFormat } from "./json-format";
 
 export interface DeleteItemCommand<
   Item extends object,

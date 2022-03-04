@@ -1,5 +1,5 @@
 import { AttributeValue, DocumentValue } from "./attribute-value";
-import { JsonFormat } from "./format";
+import { JsonFormat } from "./json-format";
 import { AlphaNumeric } from "./letter";
 
 export type ExpressionAttributeValues<

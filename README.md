@@ -100,6 +100,8 @@ Both the AWS SDK v2 and v3 provide a javascript-friendly interface called the `D
 
 For the SDK V2 client, cast it to `TypeSafeDynamoDBv2`.
 
+See: https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html
+
 ```ts
 import { DynamoDB } from "aws-sdk";
 import { TypeSafeDocumentClientV2 } from "typesafe-dynamodb/lib/document-client-v2";
@@ -110,8 +112,6 @@ const table = new DynamoDB.DocumentClient() as TypeSafeDocumentClientV2<
   "sk"
 >;
 ```
-
-https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html
 
 #### AWS SDK V3
 

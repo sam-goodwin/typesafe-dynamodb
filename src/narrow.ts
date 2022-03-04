@@ -1,4 +1,4 @@
-import { JsonFormat } from "./format";
+import { JsonFormat } from "./json-format";
 import { TableKey, TableKeyAttributeToObject } from "./key";
 
 export type Narrow<

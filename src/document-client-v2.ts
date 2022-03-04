@@ -1,7 +1,7 @@
 import type { AWSError, DynamoDB, Request } from "aws-sdk";
 import { Callback } from "./callback";
 import { DeleteItemInput, DeleteItemOutput } from "./delete-item";
-import { JsonFormat } from "./format";
+import { JsonFormat } from "./json-format";
 import { GetItemInput, GetItemOutput } from "./get-item";
 import { TableKey } from "./key";
 import { PutItemInput, PutItemOutput } from "./put-item";

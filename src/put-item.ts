@@ -3,7 +3,7 @@ import {
   ExpressionAttributeNames,
   ExpressionAttributeValues,
 } from "./expression-attributes";
-import { FormatObject, JsonFormat } from "./format";
+import { FormatObject, JsonFormat } from "./json-format";
 
 export type PutItemInput<
   Item extends object,

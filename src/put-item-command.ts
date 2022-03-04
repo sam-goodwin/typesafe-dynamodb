@@ -6,7 +6,7 @@ import {
 import type { Command } from "@aws-sdk/smithy-client";
 import { PutItemInput, PutItemOutput } from "./put-item";
 import { MetadataBearer } from "@aws-sdk/types";
-import { JsonFormat } from "./format";
+import { JsonFormat } from "./json-format";
 
 export interface PutItemCommand<
   Item extends object,

@@ -6,7 +6,7 @@ import { TypeSafeDeleteItemCommand } from "../src/delete-item-command";
 import { TypeSafePutItemCommand } from "../src/put-item-command";
 import { TypeSafeQueryCommand } from "../src/query-command";
 import { TypeSafeUpdateItemCommand } from "../src/update-item-command";
-import { JsonFormat } from "../src/format";
+import { JsonFormat } from "../src/json-format";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { TypeSafeDocumentClientV3 } from "../src/document-client-v3";
 
