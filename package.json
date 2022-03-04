@@ -31,7 +31,7 @@
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.25.4",
-    "jest": "^27.4.7",
+    "jest": "^27.5.1",
     "jest-junit": "^13",
     "json-schema": "^0.4.0",
     "npm-check-updates": "^12",
@@ -47,7 +47,7 @@
     "@aws-sdk/types": "^3.50.0",
     "@aws-sdk/util-dynamodb": "^3.50.0",
     "@types/aws-lambda": "^8.10.92",
-    "aws-sdk": "^2.1071.0"
+    "aws-sdk": "^2.1079.0"
   },
   "main": "lib/index.js",
   "license": "Apache-2.0",
