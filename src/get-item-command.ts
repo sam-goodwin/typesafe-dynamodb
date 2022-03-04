@@ -3,16 +3,18 @@ import {
   GetItemCommand as _GetItemCommand,
 } from "@aws-sdk/client-dynamodb";
 import type { Command } from "@aws-sdk/smithy-client";
-import { KeyAttribute } from "./key";
+import { TableKey } from "./key";
 import { GetItemInput, GetItemOutput } from "./get-item";
 import { MetadataBearer } from "@aws-sdk/types";
+import { JsonFormat } from "./json-format";
 
 export function TypeSafeGetItemCommand<
   Item extends object,
   PartitionKey extends keyof Item,
-  RangeKey extends keyof Item | undefined
+  RangeKey extends keyof Item | undefined,
+  Format extends JsonFormat = JsonFormat.Default
 >(): new <
-  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
+  Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
   AttributesToGet extends keyof Item | undefined,
   ProjectionExpression extends string | undefined
 >(
@@ -22,7 +24,8 @@ export function TypeSafeGetItemCommand<
     RangeKey,
     Key,
     AttributesToGet,
-    ProjectionExpression
+    ProjectionExpression,
+    Format
   >
 ) => GetItemCommand<
   Item,
@@ -30,7 +33,8 @@ export function TypeSafeGetItemCommand<
   RangeKey,
   Key,
   AttributesToGet,
-  ProjectionExpression
+  ProjectionExpression,
+  Format
 > {
   return _GetItemCommand as any;
 }
@@ -39,9 +43,10 @@ interface GetItemCommand<
   Item extends object,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined,
-  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
+  Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
   AttributesToGet extends keyof Item | undefined,
-  ProjectionExpression extends string | undefined
+  ProjectionExpression extends string | undefined,
+  Format extends JsonFormat
 > extends Command<
     GetItemInput<
       Item,
@@ -49,9 +54,18 @@ interface GetItemCommand<
       RangeKey,
       Key,
       AttributesToGet,
-      ProjectionExpression
+      ProjectionExpression,
+      Format
     >,
-    GetItemOutput<Item, Key, AttributesToGet, ProjectionExpression> &
+    GetItemOutput<
+      Item,
+      PartitionKey,
+      RangeKey,
+      Key,
+      AttributesToGet,
+      ProjectionExpression,
+      Format
+    > &
       MetadataBearer,
     DynamoDBClientResolvedConfig
   > {

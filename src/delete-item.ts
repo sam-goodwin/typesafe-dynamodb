@@ -1,28 +1,30 @@
 import type { DynamoDB } from "aws-sdk";
-import { ToAttributeMap } from "./attribute-value";
 import {
   ExpressionAttributeNames,
   ExpressionAttributeValues,
 } from "./expression-attributes";
-import { KeyAttribute } from "./key";
+import { FormatObject, JsonFormat } from "./json-format";
+import { TableKey } from "./key";
 
 export type DeleteItemInput<
   Item extends object,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined,
-  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
+  Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
   ConditionExpression extends string | undefined,
-  ReturnValue extends DynamoDB.ReturnValue = "NONE"
+  ReturnValue extends DynamoDB.ReturnValue,
+  Format extends JsonFormat
 > = Omit<
   DynamoDB.DeleteItemInput,
   | "ConditionExpression"
   | "ExpressionAttributeNames"
   | "ExpressionAttributeValues"
   | "Item"
+  | "Key"
   | "ReturnValues"
 > &
   ExpressionAttributeNames<ConditionExpression> &
-  ExpressionAttributeValues<ConditionExpression> & {
+  ExpressionAttributeValues<ConditionExpression, Format> & {
     Key: Key;
     ReturnValues?: ReturnValue;
     ConditionExpression?: ConditionExpression;
@@ -30,13 +32,14 @@ export type DeleteItemInput<
 
 export interface DeleteItemOutput<
   Item extends object,
-  ReturnValue extends DynamoDB.ReturnValue = "NONE"
+  ReturnValue extends DynamoDB.ReturnValue,
+  Format extends JsonFormat
 > extends Omit<DynamoDB.DeleteItemOutput, "Attributes"> {
   Attributes?: "ALL_OLD" | "ALL_NEW" extends ReturnValue
-    ? ToAttributeMap<Item>
+    ? FormatObject<Item, Format>
     : undefined | "NONE" extends ReturnValue
     ? undefined
     : "UPDATED_OLD" | "UPDATED_NEW" extends ReturnValue
-    ? Partial<ToAttributeMap<Item>>
-    : Partial<ToAttributeMap<Item>>;
+    ? Partial<FormatObject<Item, Format>>
+    : Partial<FormatObject<Item, Format>>;
 }

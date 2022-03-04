@@ -1,20 +1,18 @@
-import { B, M, N, S, ToAttributeValue } from "./attribute-value";
+import { B, N, S } from "./attribute-value";
+import { JsonFormat, FormatObject } from "./json-format";
 
-export type Key<
+export type TableKey<
   Item extends object,
   PartitionKey extends keyof Item,
-  RangeKey extends keyof Item | undefined
-> = Pick<Item, Exclude<PartitionKey | RangeKey, undefined>>;
+  RangeKey extends keyof Item | undefined,
+  Format extends JsonFormat
+> = FormatObject<
+  Pick<Item, Exclude<PartitionKey | RangeKey, undefined>>,
+  Format
+>;
 
-export type KeyAttribute<
-  Item extends object,
-  PartitionKey extends keyof Item,
-  RangeKey extends keyof Item | undefined
-> = Extract<ToAttributeValue<Key<Item, PartitionKey, RangeKey>>, M>["M"];
-
-export type KeyAttributeToObject<
-  Item extends object,
-  Key extends KeyAttribute<Item, keyof Item, keyof Item | undefined>
+export type TableKeyAttributeToObject<
+  Key extends TableKey<any, any, any, JsonFormat.Document>
 > = {
   [attrName in keyof Key]: Key[attrName] extends S<infer s>
     ? s

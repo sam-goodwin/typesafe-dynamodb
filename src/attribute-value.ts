@@ -26,6 +26,18 @@ export type NativeBinaryAttribute =
   | Uint8Array
   | Uint8ClampedArray;
 
+export type DocumentValue =
+  | undefined
+  | null
+  | boolean
+  | number
+  | string
+  | Document[]
+  | NativeBinaryAttribute
+  | {
+      [key: string]: DocumentValue;
+    };
+
 export type ToAttributeMap<T extends object> = ToAttributeValue<T>["M"];
 
 /**

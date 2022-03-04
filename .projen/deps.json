@@ -76,6 +76,10 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-sdk/lib-dynamodb",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-sdk/smithy-client",
       "type": "runtime"
     },

@@ -92,6 +92,58 @@ await client.send(
 );
 ```
 
+### Document Client
+
+Both the AWS SDK v2 and v3 provide a javascript-friendly interface called the `DocumentClient`. Instead of using the AttributeValue format, such as `{ S: "hello" }` or `{ N: "123" }`, the `DocumentClient` enables you to use native javascript types, e.g. `"hello"` or `123`.
+
+#### AWS SDK V2
+
+For the SDK V2 client, cast it to `TypeSafeDynamoDBv2`.
+
+See: https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html
+
+```ts
+import { DynamoDB } from "aws-sdk";
+import { TypeSafeDocumentClientV2 } from "typesafe-dynamodb/lib/document-client-v2";
+
+const table = new DynamoDB.DocumentClient() as TypeSafeDocumentClientV2<
+  MyItem,
+  "pk",
+  "sk"
+>;
+```
+
+#### AWS SDK V3
+
+When defining your Command types, specify the `JsonFormat.Document` type parameter to adapt it to the `DocumentClient` interface.
+
+See: https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_lib_dynamodb.html
+
+```ts
+import { JsonFormat } from "typesafe-dynamodb";
+import { TypeSafeGetItemCommand } from "typesafe-dynamodb/lib/get-item-command";
+
+const GetItemCommand = TypeSafeGetItemCommand<
+  MyType,
+  "key",
+  "sort",
+  JsonFormat.Document // specify the format as Document.
+>();
+```
+
+For the SDK V3 client, cast it to `TypeSafeDynamoDBv3`.
+
+```ts
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { TypeSafeDocumentClientV3 } from "typesafe-dynamodb/lib/document-client-v3";
+
+const client = new DynamoDBClient({});
+
+const docClient = DynamoDBDocumentClient.from(
+  client
+) as TypeSafeDocumentClientV3<MyType, "key", "sort">;
+```
+
 ## Features
 
 ### Type-aware Input and Output

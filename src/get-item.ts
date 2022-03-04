@@ -1,6 +1,6 @@
 import type { DynamoDB } from "aws-sdk";
-import { ToAttributeMap } from "./attribute-value";
-import { KeyAttribute } from "./key";
+import { JsonFormat, FormatObject } from "./json-format";
+import { TableKey } from "./key";
 import { Narrow } from "./narrow";
 import { ApplyProjection } from "./projection";
 
@@ -8,9 +8,10 @@ export interface GetItemInput<
   Item extends object,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined,
-  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
+  Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
   AttributesToGet extends keyof Item | undefined,
-  ProjectionExpression extends string | undefined
+  ProjectionExpression extends string | undefined,
+  Format extends JsonFormat
 > extends Omit<
     DynamoDB.GetItemInput,
     "Key" | "AttributesToGet" | "ProjectionExpression"
@@ -21,21 +22,25 @@ export interface GetItemInput<
 }
 export interface GetItemOutput<
   Item extends object,
-  Key extends KeyAttribute<Item, any, any>,
+  PartitionKey extends keyof Item,
+  RangeKey extends keyof Item | undefined,
+  Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
   AttributesToGet extends keyof Item | undefined,
-  ProjectionExpression extends string | undefined
+  ProjectionExpression extends string | undefined,
+  Format extends JsonFormat = JsonFormat.AttributeValue
 > extends Omit<DynamoDB.GetItemOutput, "Item"> {
-  Item?: ToAttributeMap<
+  Item?: FormatObject<
     undefined extends AttributesToGet
       ? undefined extends ProjectionExpression
-        ? Narrow<Item, Key>
+        ? Narrow<Item, Key, Format>
         : Extract<
             ApplyProjection<
-              Narrow<Item, Key>,
+              Narrow<Item, Key, Format>,
               Extract<ProjectionExpression, string>
             >,
             object
           >
-      : Pick<Narrow<Item, Key>, Extract<AttributesToGet, keyof Item>>
+      : Pick<Narrow<Item, Key, Format>, Extract<AttributesToGet, keyof Item>>,
+    Format
   >;
 }
