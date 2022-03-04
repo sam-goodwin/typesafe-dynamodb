@@ -1,7 +1,5 @@
-import type {
-  DynamoDB,
-  ReturnValue as DynamoDBReturnValue,
-} from "@aws-sdk/client-dynamodb";
+import type { ReturnValue as DynamoDBReturnValue } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocument } from "@aws-sdk/lib-dynamodb";
 import { MetadataBearer } from "@aws-sdk/types";
 import { ProjectionExpression } from "aws-sdk/clients/dynamodb";
 import { Callback } from "./callback";
@@ -14,21 +12,16 @@ import { QueryInput, QueryOutput } from "./query";
 import { ScanInput, ScanOutput } from "./scan";
 import { UpdateItemInput, UpdateItemOutput } from "./update-item";
 
-export interface TypeSafeDynamoDBv3<
+export interface TypeSafeDocumentClientV3<
   Item extends object,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined = undefined
 > extends Omit<
-    DynamoDB,
-    "getItem" | "deleteItem" | "putItem" | "updateItem" | "query" | "scan"
+    DynamoDBDocument,
+    "get" | "delete" | "put" | "update" | "query" | "scan"
   > {
-  getItem<
-    Key extends TableKey<
-      Item,
-      PartitionKey,
-      RangeKey,
-      JsonFormat.AttributeValue
-    >,
+  get<
+    Key extends TableKey<Item, PartitionKey, RangeKey, JsonFormat.Document>,
     AttributesToGet extends keyof Item | undefined = undefined,
     ProjectionExpression extends string | undefined = undefined
   >(
@@ -39,7 +32,7 @@ export interface TypeSafeDynamoDBv3<
       Key,
       AttributesToGet,
       ProjectionExpression,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >
   ): Promise<
     GetItemOutput<
@@ -49,18 +42,13 @@ export interface TypeSafeDynamoDBv3<
       Key,
       AttributesToGet,
       ProjectionExpression,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     > &
       MetadataBearer
   >;
 
-  getItem<
-    Key extends TableKey<
-      Item,
-      PartitionKey,
-      RangeKey,
-      JsonFormat.AttributeValue
-    >,
+  get<
+    Key extends TableKey<Item, PartitionKey, RangeKey, JsonFormat.Document>,
     AttributesToGet extends keyof Item | undefined = undefined,
     ProjectionExpression extends string | undefined = undefined
   >(
@@ -71,7 +59,7 @@ export interface TypeSafeDynamoDBv3<
       Key,
       AttributesToGet,
       ProjectionExpression,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >,
     callback: Callback<
       GetItemOutput<
@@ -81,19 +69,14 @@ export interface TypeSafeDynamoDBv3<
         Key,
         AttributesToGet,
         ProjectionExpression,
-        JsonFormat.AttributeValue
+        JsonFormat.Document
       >,
       any
     >
   ): void;
 
-  deleteItem<
-    Key extends TableKey<
-      Item,
-      PartitionKey,
-      RangeKey,
-      JsonFormat.AttributeValue
-    >,
+  delete<
+    Key extends TableKey<Item, PartitionKey, RangeKey, JsonFormat.Document>,
     ConditionExpression extends string | undefined,
     ReturnValue extends DynamoDBReturnValue = "NONE"
   >(
@@ -104,20 +87,14 @@ export interface TypeSafeDynamoDBv3<
       Key,
       ConditionExpression,
       ReturnValue,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >
   ): Promise<
-    DeleteItemOutput<Item, ReturnValue, JsonFormat.AttributeValue> &
-      MetadataBearer
+    DeleteItemOutput<Item, ReturnValue, JsonFormat.Document> & MetadataBearer
   >;
 
-  deleteItem<
-    Key extends TableKey<
-      Item,
-      PartitionKey,
-      RangeKey,
-      JsonFormat.AttributeValue
-    >,
+  delete<
+    Key extends TableKey<Item, PartitionKey, RangeKey, JsonFormat.Document>,
     ConditionExpression extends string | undefined,
     ReturnValue extends DynamoDBReturnValue = "NONE"
   >(
@@ -128,16 +105,15 @@ export interface TypeSafeDynamoDBv3<
       Key,
       ConditionExpression,
       ReturnValue,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >,
     callback: Callback<
-      DeleteItemOutput<Item, ReturnValue, JsonFormat.AttributeValue> &
-        MetadataBearer,
+      DeleteItemOutput<Item, ReturnValue, JsonFormat.Document> & MetadataBearer,
       any
     >
   ): void;
 
-  putItem<
+  put<
     ConditionExpression extends string | undefined,
     ReturnValue extends DynamoDBReturnValue = "NONE"
   >(
@@ -145,13 +121,13 @@ export interface TypeSafeDynamoDBv3<
       Item,
       ConditionExpression,
       ReturnValue,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >
   ): Promise<
-    PutItemOutput<Item, ReturnValue, JsonFormat.AttributeValue> & MetadataBearer
+    PutItemOutput<Item, ReturnValue, JsonFormat.Document> & MetadataBearer
   >;
 
-  putItem<
+  put<
     ConditionExpression extends string | undefined,
     ReturnValue extends DynamoDBReturnValue = "NONE"
   >(
@@ -159,22 +135,16 @@ export interface TypeSafeDynamoDBv3<
       Item,
       ConditionExpression,
       ReturnValue,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >,
     callback: Callback<
-      PutItemOutput<Item, ReturnValue, JsonFormat.AttributeValue> &
-        MetadataBearer,
+      PutItemOutput<Item, ReturnValue, JsonFormat.Document> & MetadataBearer,
       any
     >
   ): void;
 
-  updateItem<
-    Key extends TableKey<
-      Item,
-      PartitionKey,
-      RangeKey,
-      JsonFormat.AttributeValue
-    >,
+  update<
+    Key extends TableKey<Item, PartitionKey, RangeKey, JsonFormat.Document>,
     UpdateExpression extends string,
     ConditionExpression extends string | undefined,
     ReturnValue extends DynamoDBReturnValue = "NONE"
@@ -187,7 +157,7 @@ export interface TypeSafeDynamoDBv3<
       UpdateExpression,
       ConditionExpression,
       ReturnValue,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >
   ): Promise<
     UpdateItemOutput<
@@ -196,17 +166,12 @@ export interface TypeSafeDynamoDBv3<
       RangeKey,
       Key,
       ReturnValue,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >
   >;
 
-  updateItem<
-    Key extends TableKey<
-      Item,
-      PartitionKey,
-      RangeKey,
-      JsonFormat.AttributeValue
-    >,
+  update<
+    Key extends TableKey<Item, PartitionKey, RangeKey, JsonFormat.Document>,
     UpdateExpression extends string,
     ConditionExpression extends string | undefined,
     ReturnValue extends DynamoDBReturnValue = "NONE"
@@ -219,7 +184,7 @@ export interface TypeSafeDynamoDBv3<
       UpdateExpression,
       ConditionExpression,
       ReturnValue,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >,
     callback?: Callback<
       UpdateItemOutput<
@@ -228,7 +193,7 @@ export interface TypeSafeDynamoDBv3<
         RangeKey,
         Key,
         ReturnValue,
-        JsonFormat.AttributeValue
+        JsonFormat.Document
       >,
       any
     >
@@ -246,11 +211,10 @@ export interface TypeSafeDynamoDBv3<
       FilterExpression,
       ProjectionExpression,
       AttributesToGet,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >
   ): Promise<
-    QueryOutput<Item, AttributesToGet, JsonFormat.AttributeValue> &
-      MetadataBearer
+    QueryOutput<Item, AttributesToGet, JsonFormat.Document> & MetadataBearer
   >;
 
   query<
@@ -264,11 +228,10 @@ export interface TypeSafeDynamoDBv3<
       FilterExpression,
       ProjectionExpression,
       AttributesToGet,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >,
     callback: Callback<
-      QueryOutput<Item, AttributesToGet, JsonFormat.AttributeValue> &
-        MetadataBearer,
+      QueryOutput<Item, AttributesToGet, JsonFormat.Document> & MetadataBearer,
       any
     >
   ): void;
@@ -285,7 +248,7 @@ export interface TypeSafeDynamoDBv3<
       AttributesToGet,
       JsonFormat.Document
     >
-  ): Promise<ScanOutput<Item, AttributesToGet, JsonFormat.AttributeValue>>;
+  ): Promise<ScanOutput<Item, AttributesToGet, JsonFormat.Document>>;
 
   scan<
     FilterExpression extends string | undefined = undefined,
@@ -297,11 +260,10 @@ export interface TypeSafeDynamoDBv3<
       FilterExpression,
       ProjectionExpression,
       AttributesToGet,
-      JsonFormat.AttributeValue
+      JsonFormat.Document
     >,
     callback?: Callback<
-      ScanOutput<Item, AttributesToGet, JsonFormat.AttributeValue> &
-        MetadataBearer,
+      ScanOutput<Item, AttributesToGet, JsonFormat.Document> & MetadataBearer,
       any
     >
   ): void;

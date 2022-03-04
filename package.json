@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.50.0",
+    "@aws-sdk/lib-dynamodb": "^3.52.0",
     "@aws-sdk/smithy-client": "^3.50.0",
     "@aws-sdk/types": "^3.50.0",
     "@aws-sdk/util-dynamodb": "^3.50.0",

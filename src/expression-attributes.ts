@@ -1,16 +1,21 @@
-import { AttributeValue } from "./attribute-value";
+import { AttributeValue, DocumentValue } from "./attribute-value";
+import { JsonFormat } from "./format";
 import { AlphaNumeric } from "./letter";
 
-export type ExpressionAttributeValues<Expression extends string | undefined> =
-  undefined extends Expression
-    ? {}
-    : ParseConditionExpressionValues<Expression> extends never
-    ? {}
-    : {
-        ExpressionAttributeValues: {
-          [name in ParseConditionExpressionValues<Expression> as `:${name}`]: AttributeValue;
-        };
+export type ExpressionAttributeValues<
+  Expression extends string | undefined,
+  Format extends JsonFormat
+> = undefined extends Expression
+  ? {}
+  : ParseConditionExpressionValues<Expression> extends never
+  ? {}
+  : {
+      ExpressionAttributeValues: {
+        [name in ParseConditionExpressionValues<Expression> as `:${name}`]: Format extends JsonFormat.AttributeValue
+          ? AttributeValue
+          : DocumentValue;
       };
+    };
 
 export type ExpressionAttributeNames<Expression extends string | undefined> =
   undefined extends Expression

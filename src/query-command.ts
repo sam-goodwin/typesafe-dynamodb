@@ -5,36 +5,38 @@ import {
 import type { Command } from "@aws-sdk/smithy-client";
 import { QueryInput, QueryOutput } from "./query";
 import { MetadataBearer } from "@aws-sdk/types";
+import { JsonFormat } from "./format";
 
-export function TypeSafeQueryCommand<Item extends object>(): new <
+export function TypeSafeQueryCommand<
+  Item extends object,
+  Format extends JsonFormat = JsonFormat.Default
+>(): new <
   KeyConditionExpression extends string | undefined,
   FilterExpression extends string | undefined,
+  ProjectionExpression extends string | undefined,
   AttributesToGet extends keyof Item | undefined
 >(
   input: QueryInput<
     Item,
     KeyConditionExpression,
     FilterExpression,
-    AttributesToGet
+    ProjectionExpression,
+    AttributesToGet,
+    Format
   >
-) => QueryCommand<
-  Item,
-  KeyConditionExpression,
-  FilterExpression,
-  AttributesToGet
-> {
-  return _QueryCommand as any;
-}
-
-interface QueryCommand<
-  Item extends object,
-  KeyConditionExpression extends string | undefined,
-  FilterExpression extends string | undefined,
-  AttributesToGet extends keyof Item | undefined
-> extends Command<
-    QueryInput<Item, KeyConditionExpression, FilterExpression, AttributesToGet>,
-    QueryOutput<Item, AttributesToGet> & MetadataBearer,
-    DynamoDBClientResolvedConfig
-  > {
+) => Command<
+  QueryInput<
+    Item,
+    KeyConditionExpression,
+    FilterExpression,
+    ProjectionExpression,
+    AttributesToGet,
+    Format
+  >,
+  QueryOutput<Item, AttributesToGet, Format> & MetadataBearer,
+  DynamoDBClientResolvedConfig
+> & {
   _brand: "QueryCommand";
+} {
+  return _QueryCommand as any;
 }

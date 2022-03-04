@@ -6,8 +6,8 @@ test("dummy", () => {
 
 import { DynamoDB } from "aws-sdk";
 
-import { TypeSafeDynamoDBv2 } from "../src/client-v2";
 import { ApplyProjection } from "../src/projection";
+import { TypeSafeDocumentClientV2 } from "../src/document-client-v2";
 
 export interface MyItem {
   pk: string;
@@ -16,7 +16,7 @@ export interface MyItem {
   list?: MyItem[];
 }
 
-const table = new DynamoDB() as unknown as TypeSafeDynamoDBv2<
+const table = new DynamoDB.DocumentClient() as TypeSafeDocumentClientV2<
   MyItem,
   "pk",
   "sk"
@@ -34,12 +34,8 @@ export async function foo(userId: string) {
         "#key2": "",
       },
       ExpressionAttributeValues: {
-        ":val": {
-          S: "val",
-        },
-        ":val2": {
-          BOOL: true,
-        },
+        ":val": "val",
+        ":val2": true,
       },
     })
     .promise();
@@ -49,64 +45,40 @@ export async function foo(userId: string) {
   }
 
   await table
-    .getItem({
+    .get({
       TableName: "",
       Key: {
-        pk: {
-          S: `USER#${userId}`,
-        },
-        sk: {
-          S: "",
-        },
+        pk: `USER#${userId}`,
+        sk: "",
       },
       ProjectionExpression: "attr",
     })
     .promise();
 
   await table
-    .deleteItem({
+    .delete({
       TableName: "",
       Key: {
-        pk: {
-          S: `USER#${userId}`,
-        },
-        sk: {
-          S: "",
-        },
+        pk: `USER#${userId}`,
+        sk: "",
       },
     })
     .promise();
 
   await table
-    .putItem({
+    .put({
       TableName: "",
       Item: {
-        pk: {
-          S: "pk",
-        },
-        sk: {
-          S: "sk",
-        },
-        attr: {
-          S: "attr",
-        },
-        list: {
-          L: [
-            {
-              M: {
-                pk: {
-                  S: "pk",
-                },
-                sk: {
-                  S: "sk",
-                },
-                attr: {
-                  S: "attr",
-                },
-              },
-            },
-          ],
-        },
+        pk: "pk",
+        sk: "sk",
+        attr: "attr",
+        list: [
+          {
+            pk: "pk",
+            sk: "sk",
+            attr: "attr",
+          },
+        ],
       },
       ConditionExpression: "#name = :value and #n = 0",
       ExpressionAttributeValues: {
@@ -181,19 +153,15 @@ interface Order<
   Address: string;
 }
 
-declare const client: TypeSafeDynamoDBv2<User | Order, "PK", "SK">;
+declare const client: TypeSafeDocumentClientV2<User | Order, "PK", "SK">;
 
 export async function getProfile(userId: String) {
   const profile = await client
-    .getItem({
+    .get({
       TableName,
       Key: {
-        PK: {
-          S: `USER#${userId}`,
-        },
-        SK: {
-          S: `#PROFILE#${userId}`,
-        },
+        PK: `USER#${userId}`,
+        SK: `#PROFILE#${userId}`,
       },
     })
     .promise();
@@ -205,15 +173,11 @@ export async function getProfile(userId: String) {
 
 export async function getOrder(userId: string, orderId: string) {
   const order = await client
-    .getItem({
+    .get({
       TableName,
       Key: {
-        PK: {
-          S: `USER#${userId}`,
-        },
-        SK: {
-          S: `ORDER#${orderId}`,
-        },
+        PK: `USER#${userId}`,
+        SK: `ORDER#${orderId}`,
       },
     })
     .promise();
@@ -225,27 +189,19 @@ export async function getOrder(userId: string, orderId: string) {
 
 export async function updateOrder(userId: string, orderId: string) {
   const defaultBehavior = await client
-    .updateItem({
+    .update({
       TableName: "",
       Key: {
-        PK: {
-          S: `USER#${userId}`,
-        },
-        SK: {
-          S: `ORDER#${orderId}`,
-        },
+        PK: `USER#${userId}`,
+        SK: `ORDER#${orderId}`,
       },
       UpdateExpression: "#k = :v",
       ExpressionAttributeNames: {
         "#k": "list",
       },
       ExpressionAttributeValues: {
-        ":v": {
-          S: "val",
-        },
-        ":v2": {
-          S: "val2",
-        },
+        ":v": "val",
+        ":v2": "val2",
       },
       ConditionExpression: "#k = :v2",
     })
@@ -254,15 +210,11 @@ export async function updateOrder(userId: string, orderId: string) {
   defaultBehavior.Attributes?.defaultBehavior.Attributes?.key;
 
   const returnNone = await client
-    .updateItem({
+    .update({
       TableName: "",
       Key: {
-        PK: {
-          S: `USER#${userId}`,
-        },
-        SK: {
-          S: `ORDER#${orderId}`,
-        },
+        PK: `USER#${userId}`,
+        SK: `ORDER#${orderId}`,
       },
       UpdateExpression: "a = 1",
       ReturnValues: "NONE",
@@ -272,15 +224,11 @@ export async function updateOrder(userId: string, orderId: string) {
   returnNone.Attributes.PK.S;
 
   const returnAllNew = await client
-    .updateItem({
+    .update({
       TableName: "",
       Key: {
-        PK: {
-          S: `USER#${userId}`,
-        },
-        SK: {
-          S: `ORDER#${orderId}`,
-        },
+        PK: `USER#${userId}`,
+        SK: `ORDER#${orderId}`,
       },
       UpdateExpression: "a = 1",
       ReturnValues: "ALL_NEW",
@@ -292,73 +240,58 @@ export async function updateOrder(userId: string, orderId: string) {
   returnAllNew.Attributes?.FullName;
 
   const returnAllOld = await client
-    .updateItem({
+    .update({
       TableName: "",
       Key: {
-        PK: {
-          S: `USER#${userId}`,
-        },
-        SK: {
-          S: `ORDER#${orderId}`,
-        },
+        PK: `USER#${userId}`,
+        SK: `ORDER#${orderId}`,
       },
       UpdateExpression: "a = 1",
       ReturnValues: "ALL_OLD",
     })
     .promise();
-  returnAllOld.Attributes?.PK?.S;
+  returnAllOld.Attributes?.PK?.length;
 
   const returnUpdatedNew = await client
-    .updateItem({
+    .update({
       TableName: "",
       Key: {
-        PK: {
-          S: `USER#${userId}`,
-        },
-        SK: {
-          S: `ORDER#${orderId}`,
-        },
+        PK: `USER#${userId}`,
+        SK: `ORDER#${orderId}`,
       },
       UpdateExpression: "a = 1",
       ReturnValues: "UPDATED_NEW",
     })
     .promise();
-  returnUpdatedNew.Attributes?.PK?.S;
+  returnUpdatedNew.Attributes?.PK?.length;
 
   const returnUpdatedOld = await client
-    .updateItem({
+    .update({
       TableName: "",
       Key: {
-        PK: {
-          S: `USER#${userId}`,
-        },
-        SK: {
-          S: `ORDER#${orderId}`,
-        },
+        PK: `USER#${userId}`,
+        SK: `ORDER#${orderId}`,
       },
       UpdateExpression: "a = 1",
       ReturnValues: "UPDATED_OLD",
     })
     .promise();
-  returnUpdatedOld.Attributes?.PK?.S;
+  returnUpdatedOld.Attributes?.PK?.length;
 
   const narrowedType = await client
-    .updateItem({
+    .update({
       TableName: "",
       Key: {
-        PK: {
-          S: `USER#${userId}`,
-        },
-        SK: {
-          S: `ORDER#${orderId}`,
-        },
+        PK: `USER#${userId}`,
+
+        SK: `ORDER#${orderId}`,
       },
       UpdateExpression: "a = 1",
       ReturnValues: "UPDATED_OLD",
     })
     .promise();
 
-  narrowedType.Attributes?.OrderID?.S;
+  narrowedType.Attributes?.OrderID?.length;
   // @ts-expect-error - FullName does not exist on order
-  narrowedType.Attributes?.FullName?.S;
+  narrowedType.Attributes?.FullName?.length;
 }

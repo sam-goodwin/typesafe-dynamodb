@@ -6,16 +6,18 @@ import {
 import type { Command } from "@aws-sdk/smithy-client";
 import { UpdateItemInput, UpdateItemOutput } from "./update-item";
 import { MetadataBearer } from "@aws-sdk/types";
-import { KeyAttribute } from "./key";
+import { TableKey } from "./key";
+import { JsonFormat } from "./format";
 
 export interface UpdateItemCommand<
   Item extends object,
   PartitionKey extends keyof Item,
   RangeKey extends keyof Item | undefined,
-  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
+  Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
   UpdateExpression extends string,
   ConditionExpression extends string | undefined,
-  ReturnValue extends DynamoDBReturnValue = "NONE"
+  ReturnValue extends DynamoDBReturnValue = "NONE",
+  Format extends JsonFormat = JsonFormat.Default
 > extends Command<
     UpdateItemInput<
       Item,
@@ -24,9 +26,10 @@ export interface UpdateItemCommand<
       Key,
       UpdateExpression,
       ConditionExpression,
-      ReturnValue
+      ReturnValue,
+      Format
     >,
-    UpdateItemOutput<Item, PartitionKey, RangeKey, Key, ReturnValue> &
+    UpdateItemOutput<Item, PartitionKey, RangeKey, Key, ReturnValue, Format> &
       MetadataBearer,
     DynamoDBClientResolvedConfig
   > {
@@ -36,9 +39,10 @@ export interface UpdateItemCommand<
 export function TypeSafeUpdateItemCommand<
   Item extends object,
   PartitionKey extends keyof Item,
-  RangeKey extends keyof Item | undefined
+  RangeKey extends keyof Item | undefined,
+  Format extends JsonFormat = JsonFormat.Default
 >(): new <
-  Key extends KeyAttribute<Item, PartitionKey, RangeKey>,
+  Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
   UpdateExpression extends string,
   ConditionExpression extends string | undefined = undefined,
   ReturnValue extends DynamoDBReturnValue = "NONE"
@@ -50,7 +54,8 @@ export function TypeSafeUpdateItemCommand<
     Key,
     UpdateExpression,
     ConditionExpression,
-    ReturnValue
+    ReturnValue,
+    Format
   >
 ) => UpdateItemCommand<
   Item,
@@ -59,7 +64,8 @@ export function TypeSafeUpdateItemCommand<
   Key,
   UpdateExpression,
   ConditionExpression,
-  ReturnValue
+  ReturnValue,
+  Format
 > {
   return _UpdateItemCommand as any;
 }

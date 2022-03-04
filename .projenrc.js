@@ -6,9 +6,10 @@ const project = new typescript.TypeScriptProject({
   deps: [
     "aws-sdk",
     "@aws-sdk/client-dynamodb",
-    "@aws-sdk/util-dynamodb",
+    "@aws-sdk/lib-dynamodb",
     "@aws-sdk/smithy-client",
     "@aws-sdk/types",
+    "@aws-sdk/util-dynamodb",
     "@types/aws-lambda",
   ],
   eslintOptions: {

@@ -5,36 +5,31 @@ import {
 } from "./expression-attributes";
 import { FormatObject, JsonFormat } from "./format";
 
-export type QueryInput<
+export type ScanInput<
   Item extends object,
-  KeyConditionExpression extends string | undefined,
   FilterExpression extends string | undefined,
   ProjectionExpression extends string | undefined,
   AttributesToGet extends keyof Item | undefined,
   Format extends JsonFormat
 > = Omit<
-  DynamoDB.QueryInput,
+  DynamoDB.ScanInput,
   | "AttributesToGet"
-  | "KeyConditionExpression"
   | "FilterExpression"
   | "ExpressionAttributeNames"
   | "ExpressionAttributeValues"
 > &
-  ExpressionAttributeNames<KeyConditionExpression> &
   ExpressionAttributeNames<FilterExpression> &
-  ExpressionAttributeValues<KeyConditionExpression, Format> &
   ExpressionAttributeValues<FilterExpression, Format> & {
-    KeyConditionExpression?: KeyConditionExpression;
     FilterExpression?: FilterExpression;
     ProjectionExpression?: ProjectionExpression;
     AttributesToGet?: AttributesToGet[];
   };
 
-export interface QueryOutput<
+export interface ScanOutput<
   Item extends object,
   AttributesToGet extends keyof Item | undefined,
   Format extends JsonFormat
-> extends Omit<DynamoDB.QueryOutput, "Items"> {
+> extends Omit<DynamoDB.ScanOutput, "Items"> {
   Items?: FormatObject<
     undefined extends AttributesToGet
       ? Item
