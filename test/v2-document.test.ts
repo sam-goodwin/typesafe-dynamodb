@@ -40,6 +40,24 @@ export async function foo(userId: string) {
     })
     .promise();
 
+  // using only projection
+  await table
+    .query({
+      TableName: "TableName",
+      AttributesToGet: ["attr"],
+      KeyConditionExpression: "key = :val",
+      FilterExpression: "key2 = :val2",
+      ProjectionExpression: "#key1",
+      ExpressionAttributeNames: {
+        "#key1": "",
+      },
+      ExpressionAttributeValues: {
+        ":val": "val",
+        ":val2": true,
+      },
+    })
+    .promise();
+
   if (response.Items) {
     response.Items[0].attr;
   }
