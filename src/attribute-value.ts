@@ -32,7 +32,7 @@ export type DocumentValue =
   | boolean
   | number
   | string
-  | Document[]
+  | DocumentValue[]
   | NativeBinaryAttribute
   | {
       [key: string]: DocumentValue;
