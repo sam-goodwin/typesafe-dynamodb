@@ -22,6 +22,7 @@ export type QueryInput<
 > &
   ExpressionAttributeNames<KeyConditionExpression> &
   ExpressionAttributeNames<FilterExpression> &
+  ExpressionAttributeNames<ProjectionExpression> &
   ExpressionAttributeValues<KeyConditionExpression, Format> &
   ExpressionAttributeValues<FilterExpression, Format> & {
     KeyConditionExpression?: KeyConditionExpression;
