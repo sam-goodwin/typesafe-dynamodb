@@ -43,6 +43,7 @@ type ParseConditionExpressionValues<Str extends string | undefined> = Extract<
 // the reason for `,` is because update expressions are separated by `,`
 // This means that we can support strings longer than 50.
 // The 50 max depth limit now only applies to the length of strings between commas, `,`.
+// @see https://github.com/sam-goodwin/typesafe-dynamodb/issues/29
 type Split<S extends string | undefined> =
   S extends `${infer pre},${infer post}`
     ? pre | Split<post>
