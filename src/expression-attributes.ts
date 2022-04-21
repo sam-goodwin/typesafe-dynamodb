@@ -29,14 +29,26 @@ export type ExpressionAttributeNames<Expression extends string | undefined> =
       };
 
 type ParseConditionExpressionNames<Str extends string | undefined> = Extract<
-  ParsePrefixedString<"#", Str>,
+  ParsePrefixedString<"#", Split<Str>>,
   string
 >;
 
 type ParseConditionExpressionValues<Str extends string | undefined> = Extract<
-  ParsePrefixedString<":", Str>,
+  ParsePrefixedString<":", Split<Str>>,
   string
 >;
+
+// long expressions can easily reach the 50 depth limit
+// to work around this, Split will partition the string by the `,` delimiter.
+// the reason for `,` is because update expressions are separated by `,`
+// This means that we can support strings longer than 50.
+// The 50 max depth limit now only applies to the length of strings between commas, `,`.
+type Split<S extends string | undefined> =
+  S extends `${infer pre},${infer post}`
+    ? pre | Split<post>
+    : S extends undefined
+    ? ""
+    : S;
 
 type ParsePrefixedString<
   Prefix extends string,
