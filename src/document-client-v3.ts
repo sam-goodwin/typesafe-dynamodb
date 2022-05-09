@@ -167,7 +167,8 @@ export interface TypeSafeDocumentClientV3<
       Key,
       ReturnValue,
       JsonFormat.Document
-    >
+    > &
+      MetadataBearer
   >;
 
   update<
@@ -194,7 +195,8 @@ export interface TypeSafeDocumentClientV3<
         Key,
         ReturnValue,
         JsonFormat.Document
-      >,
+      > &
+        MetadataBearer,
       any
     >
   ): void;

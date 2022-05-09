@@ -82,7 +82,8 @@ export interface TypeSafeDynamoDBv3<
         AttributesToGet,
         ProjectionExpression,
         JsonFormat.AttributeValue
-      >,
+      > &
+        MetadataBearer,
       any
     >
   ): void;
@@ -197,7 +198,8 @@ export interface TypeSafeDynamoDBv3<
       Key,
       ReturnValue,
       JsonFormat.AttributeValue
-    >
+    > &
+      MetadataBearer
   >;
 
   updateItem<
@@ -229,7 +231,8 @@ export interface TypeSafeDynamoDBv3<
         Key,
         ReturnValue,
         JsonFormat.AttributeValue
-      >,
+      > &
+        MetadataBearer,
       any
     >
   ): void;
@@ -285,7 +288,10 @@ export interface TypeSafeDynamoDBv3<
       AttributesToGet,
       JsonFormat.Document
     >
-  ): Promise<ScanOutput<Item, AttributesToGet, JsonFormat.AttributeValue>>;
+  ): Promise<
+    ScanOutput<Item, AttributesToGet, JsonFormat.AttributeValue> &
+      MetadataBearer
+  >;
 
   scan<
     FilterExpression extends string | undefined = undefined,
