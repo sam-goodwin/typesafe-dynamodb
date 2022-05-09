@@ -20,7 +20,7 @@ const project = new typescript.TypeScriptProject({
       lib: ["dom"],
     },
   },
-  gitignore: [".DS_Store"],
+  gitignore: [".DS_Store", ".dccache"],
   releaseToNpm: true,
 });
 
