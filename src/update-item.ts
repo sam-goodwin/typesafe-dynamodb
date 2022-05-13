@@ -47,7 +47,7 @@ export interface UpdateItemOutput<
     ReturnValue extends undefined | "NONE"
       ? undefined
       : ReturnValue extends "ALL_OLD" | "ALL_NEW"
-      ? Partial<Narrow<Item, Key, Format>>
+      ? Narrow<Item, Key, Format>
       : ReturnValue extends "UPDATED_OLD" | "UPDATED_NEW"
       ? Partial<Narrow<Item, Key, Format>>
       : Partial<Narrow<Item, Key, Format>>,
