@@ -1,14 +1,13 @@
 import "jest";
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { TypeSafeGetItemCommand } from "../src/get-item-command";
-import { TypeSafeDeleteItemCommand } from "../src/delete-item-command";
-import { TypeSafePutItemCommand } from "../src/put-item-command";
-import { TypeSafeQueryCommand } from "../src/query-command";
-import { TypeSafeUpdateItemCommand } from "../src/update-item-command";
-import { JsonFormat } from "../src/json-format";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { TypeSafeDocumentClientV3 } from "../src/document-client-v3";
+import { TypeSafePutDocumentCommand } from "../src/put-document-command";
+import { TypeSafeUpdateDocumentCommand } from "../src/update-document-command";
+import { TypeSafeQueryDocumentCommand } from "../src/query-document-command";
+import { TypeSafeGetDocumentCommand } from "../src/get-document-command";
+import { TypeSafeDeleteDocumentCommand } from "../src/delete-document-command";
 
 interface MyType {
   key: string;
@@ -22,33 +21,26 @@ const docClient = DynamoDBDocumentClient.from(
   client
 ) as TypeSafeDocumentClientV3<MyType, "key", "sort">;
 
-const PutItemCommand = TypeSafePutItemCommand<MyType, JsonFormat.Document>();
-const UpdateItemCommand = TypeSafeUpdateItemCommand<
+const PutItemCommand = TypeSafePutDocumentCommand<MyType>();
+const UpdateItemCommand = TypeSafeUpdateDocumentCommand<
   MyType,
   "key",
-  "sort",
-  JsonFormat.Document
+  "sort"
 >();
-const GetItemCommand = TypeSafeGetItemCommand<
+const GetItemCommand = TypeSafeGetDocumentCommand<MyType, "key", "sort">();
+const DeleteItemCommand = TypeSafeDeleteDocumentCommand<
   MyType,
   "key",
-  "sort",
-  JsonFormat.Document
+  "sort"
 >();
-const DeleteItemCommand = TypeSafeDeleteItemCommand<
-  MyType,
-  "key",
-  "sort",
-  JsonFormat.Document
->();
-const QueryCommand = TypeSafeQueryCommand<MyType, JsonFormat.Document>();
+const QueryCommand = TypeSafeQueryDocumentCommand<MyType>();
 
-it("dummy", () => {
+it("dummy", async () => {
   expect(1).toBe(1);
 });
 
 export async function foo() {
-  const get = await client.send(
+  const get = await docClient.send(
     new GetItemCommand({
       TableName: "",
       Key: {
@@ -74,7 +66,7 @@ export async function foo() {
   // @ts-expect-error
   getDoc.Item?.list;
 
-  const put = await client.send(
+  const put = await docClient.send(
     new PutItemCommand({
       TableName: "",
       Item: {
@@ -96,7 +88,7 @@ export async function foo() {
   });
   putDoc.Attributes?.key;
 
-  const del = await client.send(
+  const del = await docClient.send(
     new DeleteItemCommand({
       TableName: "",
       Key: {
@@ -118,7 +110,7 @@ export async function foo() {
   });
   delDoc.Attributes?.key;
 
-  const query = await client.send(
+  const query = await docClient.send(
     new QueryCommand({
       TableName: "",
       KeyConditionExpression: "#key = :val",
@@ -148,7 +140,7 @@ export async function foo() {
 }
 
 export async function updateItem() {
-  const defaultBehavior = await client.send(
+  const defaultBehavior = await docClient.send(
     new UpdateItemCommand({
       TableName: "",
       Key: {
@@ -169,7 +161,7 @@ export async function updateItem() {
   // @ts-expect-error - default ReturnValues is None
   defaultBehavior.Attributes?.key;
 
-  const returnNone = await client.send(
+  const returnNone = await docClient.send(
     new UpdateItemCommand({
       TableName: "",
       Key: {
@@ -183,7 +175,7 @@ export async function updateItem() {
   // @ts-expect-error - nothing is Returned
   returnNone.Attributes?.key;
 
-  const returnAllNew = await client.send(
+  const returnAllNew = await docClient.send(
     new UpdateItemCommand({
       TableName: "",
       Key: {
@@ -196,7 +188,7 @@ export async function updateItem() {
   );
   returnAllNew.Attributes?.key?.length;
 
-  const returnAllOld = await client.send(
+  const returnAllOld = await docClient.send(
     new UpdateItemCommand({
       TableName: "",
       Key: {
@@ -209,7 +201,7 @@ export async function updateItem() {
   );
   returnAllOld.Attributes?.key?.length;
 
-  const returnUpdatedNew = await client.send(
+  const returnUpdatedNew = await docClient.send(
     new UpdateItemCommand({
       TableName: "",
       Key: {
@@ -222,7 +214,7 @@ export async function updateItem() {
   );
   returnUpdatedNew.Attributes?.key?.length;
 
-  const returnUpdatedOld = await client.send(
+  const returnUpdatedOld = await docClient.send(
     new UpdateItemCommand({
       TableName: "",
       Key: {

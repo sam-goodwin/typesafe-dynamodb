@@ -98,7 +98,7 @@ Both the AWS SDK v2 and v3 provide a javascript-friendly interface called the `D
 
 #### AWS SDK V2
 
-For the SDK V2 client, cast it to `TypeSafeDynamoDBv2`.
+For the SDK V2 client, cast it to `TypeSafeDocumentClientV2`.
 
 See: https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html
 
@@ -115,25 +115,28 @@ const table = new DynamoDB.DocumentClient() as TypeSafeDocumentClientV2<
 
 #### AWS SDK V3
 
-When defining your Command types, specify the `JsonFormat.Document` type parameter to adapt it to the `DocumentClient` interface.
+When defining your Command types, use the corresponding `TypeSafe*DocumentCommand` type, for example `TypeSafeGetDocumentCommand` instead of `TypeSafeGetItemCommand`:
+
+- GetItem - `TypeSafeGetDocumentCommand`
+- PutItem - `TypeSafePutDocumentCommand`
+- DeleteItem - `TypeSafeDeleteDocumentCommand`
+- UpdateItem - `TypeSafeUpdateDocumentCommand`
+- Query - `TypeSafeQueryDocumentCommand`
+- Scan - `TypeSafeScanDocumentCommand`
 
 See: https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_lib_dynamodb.html
 
 ```ts
 import { JsonFormat } from "typesafe-dynamodb";
-import { TypeSafeGetItemCommand } from "typesafe-dynamodb/lib/get-item-command";
+import { TypeSafeGetDocumentCommand } from "typesafe-dynamodb/lib/get-document-command";
 
-const GetItemCommand = TypeSafeGetItemCommand<
-  MyType,
-  "key",
-  "sort",
-  JsonFormat.Document // specify the format as Document.
->();
+const MyGetItemCommand = TypeSafeGetDocumentCommand<MyType, "key", "sort">();
 ```
 
 For the SDK V3 client, cast it to `TypeSafeDynamoDBv3`.
 
 ```ts
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { TypeSafeDocumentClientV3 } from "typesafe-dynamodb/lib/document-client-v3";
 
@@ -142,6 +145,14 @@ const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(
   client
 ) as TypeSafeDocumentClientV3<MyType, "key", "sort">;
+```
+
+And then call `.send` with an instance of your TypeSafe Command:
+
+```ts
+docClient.send(new MyGetItemCommand({
+  ..
+}));
 ```
 
 ## Features

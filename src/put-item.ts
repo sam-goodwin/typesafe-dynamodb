@@ -1,9 +1,15 @@
 import type { DynamoDB } from "aws-sdk";
-import {
+import type {
   ExpressionAttributeNames,
   ExpressionAttributeValues,
 } from "./expression-attributes";
-import { FormatObject, JsonFormat } from "./json-format";
+import type { FormatObject, JsonFormat } from "./json-format";
+import type {
+  DynamoDBClientResolvedConfig,
+  ReturnValue as DynamoDBReturnValue,
+} from "@aws-sdk/client-dynamodb";
+import type { Command } from "@aws-sdk/smithy-client";
+import type { MetadataBearer } from "@aws-sdk/types";
 
 export type PutItemInput<
   Item extends object,
@@ -38,3 +44,16 @@ export interface PutItemOutput<
     ? Partial<FormatObject<Item, Format>>
     : Partial<FormatObject<Item, Format>>;
 }
+
+export type PutCommand<Item extends object, Format extends JsonFormat> = new <
+  ConditionExpression extends string | undefined = undefined,
+  ReturnValue extends DynamoDBReturnValue = "NONE"
+>(
+  input: PutItemInput<Item, ConditionExpression, ReturnValue, Format>
+) => Command<
+  PutItemInput<Item, ConditionExpression, ReturnValue, Format>,
+  PutItemOutput<Item, ReturnValue, Format> & MetadataBearer,
+  DynamoDBClientResolvedConfig
+> & {
+  _brand: "PutItemCommand";
+};
