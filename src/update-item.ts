@@ -1,11 +1,17 @@
 import type { DynamoDB } from "aws-sdk";
-import {
+import type {
   ExpressionAttributeNames,
   ExpressionAttributeValues,
 } from "./expression-attributes";
-import { FormatObject, JsonFormat } from "./json-format";
-import { TableKey } from "./key";
-import { Narrow } from "./narrow";
+import type { FormatObject, JsonFormat } from "./json-format";
+import type { TableKey } from "./key";
+import type { Narrow } from "./narrow";
+import type {
+  DynamoDBClientResolvedConfig,
+  ReturnValue as DynamoDBReturnValue,
+} from "@aws-sdk/client-dynamodb";
+import type { MetadataBearer } from "@aws-sdk/types";
+import type { Command } from "@aws-sdk/smithy-client";
 
 export type UpdateItemInput<
   Item extends object,
@@ -54,3 +60,42 @@ export interface UpdateItemOutput<
     Format
   >;
 }
+
+export type UpdateCommand<
+  Item extends object,
+  PartitionKey extends keyof Item,
+  RangeKey extends keyof Item | undefined,
+  Format extends JsonFormat
+> = new <
+  Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
+  UpdateExpression extends string,
+  ConditionExpression extends string | undefined = undefined,
+  ReturnValue extends DynamoDBReturnValue = "NONE"
+>(
+  input: UpdateItemInput<
+    Item,
+    PartitionKey,
+    RangeKey,
+    Key,
+    UpdateExpression,
+    ConditionExpression,
+    ReturnValue,
+    Format
+  >
+) => Command<
+  UpdateItemInput<
+    Item,
+    PartitionKey,
+    RangeKey,
+    Key,
+    UpdateExpression,
+    ConditionExpression,
+    ReturnValue,
+    Format
+  >,
+  UpdateItemOutput<Item, PartitionKey, RangeKey, Key, ReturnValue, Format> &
+    MetadataBearer,
+  DynamoDBClientResolvedConfig
+> & {
+  _brand: "UpdateItemCommand";
+};

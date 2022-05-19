@@ -1,9 +1,15 @@
 import type { DynamoDB } from "aws-sdk";
-import {
+import type {
   ExpressionAttributeNames,
   ExpressionAttributeValues,
 } from "./expression-attributes";
-import { FormatObject, JsonFormat } from "./json-format";
+import type { FormatObject, JsonFormat } from "./json-format";
+import type {
+  DynamoDBClientResolvedConfig,
+  ScanCommand as _ScanCommand,
+} from "@aws-sdk/client-dynamodb";
+import type { Command } from "@aws-sdk/smithy-client";
+import type { MetadataBearer } from "@aws-sdk/types";
 
 export type ScanInput<
   Item extends object,
@@ -37,3 +43,29 @@ export interface ScanOutput<
     Format
   >[];
 }
+
+export type ScanCommand<Item extends object, Format extends JsonFormat> = new <
+  FilterExpression extends string | undefined,
+  ProjectionExpression extends string | undefined,
+  AttributesToGet extends keyof Item | undefined
+>(
+  input: ScanInput<
+    Item,
+    FilterExpression,
+    ProjectionExpression,
+    AttributesToGet,
+    Format
+  >
+) => Command<
+  ScanInput<
+    Item,
+    FilterExpression,
+    ProjectionExpression,
+    AttributesToGet,
+    Format
+  >,
+  ScanOutput<Item, AttributesToGet, Format> & MetadataBearer,
+  DynamoDBClientResolvedConfig
+> & {
+  _brand: "ScanCommand";
+};

@@ -1,10 +1,16 @@
 import type { DynamoDB } from "aws-sdk";
-import {
+import type {
   ExpressionAttributeNames,
   ExpressionAttributeValues,
 } from "./expression-attributes";
-import { FormatObject, JsonFormat } from "./json-format";
-import { TableKey } from "./key";
+import type { FormatObject, JsonFormat } from "./json-format";
+import type { TableKey } from "./key";
+import type {
+  DynamoDBClientResolvedConfig,
+  ReturnValue as DynamoDBReturnValue,
+} from "@aws-sdk/client-dynamodb";
+import type { Command } from "@aws-sdk/smithy-client";
+import type { MetadataBearer } from "@aws-sdk/types";
 
 export type DeleteItemInput<
   Item extends object,
@@ -43,3 +49,38 @@ export interface DeleteItemOutput<
     ? Partial<FormatObject<Item, Format>>
     : Partial<FormatObject<Item, Format>>;
 }
+
+export type DeleteCommand<
+  Item extends object,
+  PartitionKey extends keyof Item,
+  RangeKey extends keyof Item | undefined,
+  Format extends JsonFormat
+> = new <
+  Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
+  ConditionExpression extends string | undefined = undefined,
+  ReturnValue extends DynamoDBReturnValue = "NONE"
+>(
+  input: DeleteItemInput<
+    Item,
+    PartitionKey,
+    RangeKey,
+    Key,
+    ConditionExpression,
+    ReturnValue,
+    Format
+  >
+) => Command<
+  DeleteItemInput<
+    Item,
+    PartitionKey,
+    RangeKey,
+    Key,
+    ConditionExpression,
+    ReturnValue,
+    Format
+  >,
+  DeleteItemOutput<Item, ReturnValue, Format> & MetadataBearer,
+  DynamoDBClientResolvedConfig
+> & {
+  _brand: "DeleteItemCommand";
+};
