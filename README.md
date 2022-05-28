@@ -6,9 +6,7 @@
 
 The end goal is to provide types that have total understanding of the AWS DynamoDB API and enable full utilization of the TypeScript type system for modeling complex DynmaoDB tables, such as the application of union types and template string literals for single-table designs.
 
-![typesafe GetItem Key](img/get-item.gif)
-
-![typesafe GetItemOutput Item](img/get-item-response.gif)
+![typesafe putItem ConditionExpression](img/put-item-expression.gif)
 
 ## Installation
 
