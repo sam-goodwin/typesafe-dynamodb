@@ -2,7 +2,7 @@ import {
   DynamoDBClientResolvedConfig,
   GetItemCommand as _GetItemCommand,
 } from "@aws-sdk/client-dynamodb";
-import type { Command } from "@aws-sdk/smithy-client";
+import type { Command } from "@smithy/smithy-client";
 import { TableKey } from "./key";
 import { GetItemInput, GetItemOutput } from "./get-item";
 import { MetadataBearer } from "@aws-sdk/types";

@@ -80,15 +80,15 @@
       "type": "runtime"
     },
     {
-      "name": "@aws-sdk/smithy-client",
-      "type": "runtime"
-    },
-    {
       "name": "@aws-sdk/types",
       "type": "runtime"
     },
     {
       "name": "@aws-sdk/util-dynamodb",
+      "type": "runtime"
+    },
+    {
+      "name": "@smithy/smithy-client",
       "type": "runtime"
     },
     {
