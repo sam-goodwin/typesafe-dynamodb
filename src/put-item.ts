@@ -8,7 +8,7 @@ import type {
   DynamoDBClientResolvedConfig,
   ReturnValue as DynamoDBReturnValue,
 } from "@aws-sdk/client-dynamodb";
-import type { Command } from "@aws-sdk/smithy-client";
+import type { Command } from "@smithy/smithy-client";
 import type { MetadataBearer } from "@aws-sdk/types";
 
 export type PutItemInput<
