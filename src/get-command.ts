@@ -15,8 +15,8 @@ export type GetCommand<
   Format extends JsonFormat
 > = new <
   Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
-  AttributesToGet extends keyof Item | undefined,
-  ProjectionExpression extends string | undefined
+  const AttributesToGet extends keyof Item | undefined,
+  const ProjectionExpression extends string | undefined
 >(
   input: GetItemInput<
     Item,
@@ -37,16 +37,18 @@ export type GetCommand<
     ProjectionExpression,
     Format
   >,
-  GetItemOutput<
-    Item,
-    PartitionKey,
-    RangeKey,
-    Key,
-    AttributesToGet,
-    ProjectionExpression,
-    Format
-  > &
-    MetadataBearer,
+  Simplify<
+    GetItemOutput<
+      Item,
+      PartitionKey,
+      RangeKey,
+      Key,
+      AttributesToGet,
+      ProjectionExpression,
+      Format
+    > &
+      MetadataBearer
+  >,
   DynamoDBClientResolvedConfig
 > & {
   _brand: "GetItemCommand";

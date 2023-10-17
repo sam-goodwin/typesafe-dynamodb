@@ -46,8 +46,8 @@ export interface PutItemOutput<
 }
 
 export type PutCommand<Item extends object, Format extends JsonFormat> = new <
-  ConditionExpression extends string | undefined = undefined,
-  ReturnValue extends DynamoDBReturnValue = "NONE"
+  const ConditionExpression extends string | undefined = undefined,
+  const ReturnValue extends DynamoDBReturnValue = "NONE"
 >(
   input: PutItemInput<Item, ConditionExpression, ReturnValue, Format>
 ) => Command<

@@ -26,20 +26,20 @@ it("dummy", () => {
 });
 
 export async function foo() {
-  const get = await client.send(
-    new GetItemCommand({
-      TableName: "",
-      Key: {
-        key: {
-          S: "",
-        },
-        sort: {
-          N: "1",
-        },
+  const getCommand = new GetItemCommand({
+    TableName: "",
+    Key: {
+      key: {
+        S: "",
       },
-      ProjectionExpression: "sort, key",
-    })
-  );
+      sort: {
+        N: "1",
+      },
+    },
+    ProjectionExpression: "sort, key",
+  });
+  const get = await client.send(getCommand);
+
   get.Item?.key;
   // @ts-expect-error
   get.Item?.list;

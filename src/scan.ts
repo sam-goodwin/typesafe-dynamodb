@@ -45,9 +45,9 @@ export interface ScanOutput<
 }
 
 export type ScanCommand<Item extends object, Format extends JsonFormat> = new <
-  FilterExpression extends string | undefined,
-  ProjectionExpression extends string | undefined,
-  AttributesToGet extends keyof Item | undefined
+  const FilterExpression extends string | undefined,
+  const ProjectionExpression extends string | undefined,
+  const AttributesToGet extends keyof Item | undefined
 >(
   input: ScanInput<
     Item,
