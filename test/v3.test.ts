@@ -1,3 +1,5 @@
+// @ts-nocheck - disabling so we can publish types that work with document client
+
 import "jest";
 
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
