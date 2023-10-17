@@ -1,5 +1,5 @@
 import type { DynamoDBClientResolvedConfig } from "@aws-sdk/client-dynamodb";
-import type { Command } from "@aws-sdk/smithy-client";
+import type { Command } from "@smithy/smithy-client";
 import type { MetadataBearer } from "@aws-sdk/types";
 import type { DynamoDB } from "aws-sdk";
 import type {
@@ -48,10 +48,10 @@ export interface QueryOutput<
 }
 
 export type QueryCommand<Item extends object, Format extends JsonFormat> = new <
-  KeyConditionExpression extends string | undefined,
-  FilterExpression extends string | undefined,
-  ProjectionExpression extends string | undefined,
-  AttributesToGet extends keyof Item | undefined
+  const KeyConditionExpression extends string | undefined,
+  const FilterExpression extends string | undefined,
+  const ProjectionExpression extends string | undefined,
+  const AttributesToGet extends keyof Item | undefined
 >(
   input: QueryInput<
     Item,

@@ -69,6 +69,7 @@
     },
     {
       "name": "typescript",
+      "version": "latest",
       "type": "build"
     },
     {

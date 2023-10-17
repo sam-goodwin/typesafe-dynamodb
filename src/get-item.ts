@@ -20,6 +20,7 @@ export interface GetItemInput<
   AttributesToGet?: readonly AttributesToGet[] | AttributesToGet[];
   ProjectionExpression?: ProjectionExpression;
 }
+
 export interface GetItemOutput<
   Item extends object,
   PartitionKey extends keyof Item,
@@ -29,18 +30,31 @@ export interface GetItemOutput<
   ProjectionExpression extends string | undefined,
   Format extends JsonFormat = JsonFormat.AttributeValue
 > extends Omit<DynamoDB.GetItemOutput, "Item"> {
-  Item?: FormatObject<
-    undefined extends AttributesToGet
-      ? undefined extends ProjectionExpression
-        ? Narrow<Item, Key, Format>
-        : Extract<
-            ApplyProjection<
-              Narrow<Item, Key, Format>,
-              Extract<ProjectionExpression, string>
+  Item?: Simplify<
+    FormatObject<
+      undefined extends AttributesToGet
+        ? undefined extends ProjectionExpression
+          ? Narrow<Item, Extract<Key, TableKey<Item, any, any, Format>>, Format>
+          : Extract<
+              ApplyProjection<
+                Narrow<
+                  Item,
+                  Extract<Key, TableKey<Item, any, any, Format>>,
+                  Format
+                >,
+                Extract<ProjectionExpression, string>
+              >,
+              object
+            >
+        : Pick<
+            Narrow<
+              Item,
+              Extract<Key, TableKey<Item, any, any, Format>>,
+              Format
             >,
-            object
-          >
-      : Pick<Narrow<Item, Key, Format>, Extract<AttributesToGet, keyof Item>>,
-    Format
+            Extract<AttributesToGet, keyof Item>
+          >,
+      Format
+    >
   >;
 }

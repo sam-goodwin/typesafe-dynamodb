@@ -9,7 +9,7 @@ import type {
   DynamoDBClientResolvedConfig,
   ReturnValue as DynamoDBReturnValue,
 } from "@aws-sdk/client-dynamodb";
-import type { Command } from "@aws-sdk/smithy-client";
+import type { Command } from "@smithy/smithy-client";
 import type { MetadataBearer } from "@aws-sdk/types";
 
 export type DeleteItemInput<
@@ -57,8 +57,8 @@ export type DeleteCommand<
   Format extends JsonFormat
 > = new <
   Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
-  ConditionExpression extends string | undefined = undefined,
-  ReturnValue extends DynamoDBReturnValue = "NONE"
+  const ConditionExpression extends string | undefined = undefined,
+  const ReturnValue extends DynamoDBReturnValue = "NONE"
 >(
   input: DeleteItemInput<
     Item,

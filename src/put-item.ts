@@ -8,7 +8,7 @@ import type {
   DynamoDBClientResolvedConfig,
   ReturnValue as DynamoDBReturnValue,
 } from "@aws-sdk/client-dynamodb";
-import type { Command } from "@aws-sdk/smithy-client";
+import type { Command } from "@smithy/smithy-client";
 import type { MetadataBearer } from "@aws-sdk/types";
 
 export type PutItemInput<
@@ -46,8 +46,8 @@ export interface PutItemOutput<
 }
 
 export type PutCommand<Item extends object, Format extends JsonFormat> = new <
-  ConditionExpression extends string | undefined = undefined,
-  ReturnValue extends DynamoDBReturnValue = "NONE"
+  const ConditionExpression extends string | undefined = undefined,
+  const ReturnValue extends DynamoDBReturnValue = "NONE"
 >(
   input: PutItemInput<Item, ConditionExpression, ReturnValue, Format>
 ) => Command<

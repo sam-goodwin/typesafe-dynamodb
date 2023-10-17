@@ -7,7 +7,7 @@ export enum JsonFormat {
 }
 
 export type FormatObject<
-  T extends object,
+  T,
   Format extends JsonFormat
 > = Format extends JsonFormat.AttributeValue
   ? T extends undefined

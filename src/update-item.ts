@@ -11,7 +11,7 @@ import type {
   ReturnValue as DynamoDBReturnValue,
 } from "@aws-sdk/client-dynamodb";
 import type { MetadataBearer } from "@aws-sdk/types";
-import type { Command } from "@aws-sdk/smithy-client";
+import type { Command } from "@smithy/smithy-client";
 
 export type UpdateItemInput<
   Item extends object,
@@ -53,10 +53,14 @@ export interface UpdateItemOutput<
     ReturnValue extends undefined | "NONE"
       ? undefined
       : ReturnValue extends "ALL_OLD" | "ALL_NEW"
-      ? Narrow<Item, Key, Format>
+      ? Narrow<Item, Extract<Key, TableKey<Item, any, any, Format>>, Format>
       : ReturnValue extends "UPDATED_OLD" | "UPDATED_NEW"
-      ? Partial<Narrow<Item, Key, Format>>
-      : Partial<Narrow<Item, Key, Format>>,
+      ? Partial<
+          Narrow<Item, Extract<Key, TableKey<Item, any, any, Format>>, Format>
+        >
+      : Partial<
+          Narrow<Item, Extract<Key, TableKey<Item, any, any, Format>>, Format>
+        >,
     Format
   >;
 }
@@ -68,9 +72,9 @@ export type UpdateCommand<
   Format extends JsonFormat
 > = new <
   Key extends TableKey<Item, PartitionKey, RangeKey, Format>,
-  UpdateExpression extends string,
-  ConditionExpression extends string | undefined = undefined,
-  ReturnValue extends DynamoDBReturnValue = "NONE"
+  const UpdateExpression extends string,
+  const ConditionExpression extends string | undefined = undefined,
+  const ReturnValue extends DynamoDBReturnValue = "NONE"
 >(
   input: UpdateItemInput<
     Item,
