@@ -41,13 +41,13 @@
     "typescript": "latest"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.429.0",
-    "@aws-sdk/lib-dynamodb": "^3.429.0",
+    "@aws-sdk/client-dynamodb": "^3.431.0",
+    "@aws-sdk/lib-dynamodb": "^3.431.0",
     "@aws-sdk/smithy-client": "^3.374.0",
     "@aws-sdk/types": "^3.428.0",
-    "@aws-sdk/util-dynamodb": "^3.429.0",
-    "@types/aws-lambda": "^8.10.124",
-    "aws-sdk": "^2.1474.0"
+    "@aws-sdk/util-dynamodb": "^3.431.0",
+    "@types/aws-lambda": "^8.10.125",
+    "aws-sdk": "^2.1476.0"
   },
   "main": "lib/index.js",
   "license": "Apache-2.0",
