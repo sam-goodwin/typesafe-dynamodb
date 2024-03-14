@@ -7,6 +7,7 @@ import { TableKey } from "./key";
 import { GetItemInput, GetItemOutput } from "./get-item";
 import { MetadataBearer } from "@aws-sdk/types";
 import { JsonFormat } from "./json-format";
+import { Simplify } from "./simplify";
 
 export type GetCommand<
   Item extends object,
