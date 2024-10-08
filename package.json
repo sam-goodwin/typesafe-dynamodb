@@ -1,6 +1,5 @@
 {
   "name": "typesafe-dynamodb",
-  "version": "0.8.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/sam-goodwin/typesafe-dynamodb"
@@ -55,6 +54,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "version": "0.0.0",
   "jest": {
     "coverageProvider": "v8",
     "testMatch": [
