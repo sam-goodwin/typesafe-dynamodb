@@ -7,7 +7,7 @@ import {
   PropRef,
   ValueRef,
 } from "./expression";
-import { Identifier } from "./letter";
+import { Word } from "./letter";
 
 export type ParseProjectionExpression<Text extends string> = Parse<
   Text,
@@ -39,11 +39,11 @@ type Parse<
   ? Parse<Rest, Concat<Expressions, Exp>, NameRef<Rest>>
   : Text extends `:${infer Rest}`
   ? Parse<Rest, Concat<Expressions, Exp>, ValueRef<Rest>>
-  : Text extends `${Identifier}${string}`
+  : Text extends `${Word}${string}`
   ? Text extends `${infer char}${infer Rest}`
     ? Parse<Rest, Expressions, Append<Exp, char>>
     : never
-  : Text extends `${Identifier}${string}`
+  : Text extends `${Word}${string}`
   ? Text extends `${infer char}${infer Rest}`
     ? Parse<Rest, Expressions, Append<Exp, char>>
     : never
