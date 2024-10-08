@@ -38,6 +38,7 @@ export type DocumentValue =
       [key: string]: DocumentValue;
     };
 
+// @ts-ignore
 export type ToAttributeMap<T extends object> = ToAttributeValue<T>["M"];
 
 /**
