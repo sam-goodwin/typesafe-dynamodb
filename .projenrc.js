@@ -3,6 +3,7 @@ const project = new typescript.TypeScriptProject({
   defaultReleaseBranch: 'main',
   name: 'typesafe-dynamodb',
   typescriptVersion: 'latest',
+  repository: 'https://github.com/sam-goodwin/typesafe-dynamodb',
   deps: [
     'aws-sdk',
     '@aws-sdk/client-dynamodb',

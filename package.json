@@ -1,5 +1,9 @@
 {
   "name": "typesafe-dynamodb",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sam-goodwin/typesafe-dynamodb"
+  },
   "scripts": {
     "build": "npx projen build",
     "bump": "npx projen bump",
