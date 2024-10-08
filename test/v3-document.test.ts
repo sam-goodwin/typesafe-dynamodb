@@ -147,13 +147,15 @@ export async function updateItem() {
         key: "",
         sort: 1,
       },
-      UpdateExpression: "#k = :v",
+      UpdateExpression: "#k = :v, #k_v = :v_2",
       ExpressionAttributeNames: {
         "#k": "list",
+        "#k_v": "list_v",
       },
       ExpressionAttributeValues: {
         ":v": "val",
         ":v2": "val2",
+        ":v_2": "val_2",
       },
       ConditionExpression: "#k = :v2",
     })

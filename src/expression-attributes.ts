@@ -1,6 +1,6 @@
 import { AttributeValue, DocumentValue } from "./attribute-value";
 import { JsonFormat } from "./json-format";
-import { AlphaNumeric } from "./letter";
+import { Word } from "./letter";
 
 export type ExpressionAttributeValues<
   Expression extends string | undefined,
@@ -61,10 +61,8 @@ type ParsePrefixedString<
   ? // it is a name
     ParsePrefixedString<
       Prefix,
-      Skip<Tail, AlphaNumeric>,
-      undefined extends Names
-        ? Read<Tail, AlphaNumeric>
-        : Names | Read<Tail, AlphaNumeric>
+      Skip<Tail, Word>,
+      undefined extends Names ? Read<Tail, Word> : Names | Read<Tail, Word>
     >
   : Str extends `${string}${infer Tail}`
   ? ParsePrefixedString<Prefix, Tail, Names>
