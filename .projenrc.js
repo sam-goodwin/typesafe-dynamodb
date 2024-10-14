@@ -4,7 +4,7 @@ const project = new typescript.TypeScriptProject({
   name: 'typesafe-dynamodb',
   typescriptVersion: 'latest',
   repository: 'https://github.com/sam-goodwin/typesafe-dynamodb',
-  deps: [
+  peerDeps: [
     'aws-sdk',
     '@aws-sdk/client-dynamodb',
     '@aws-sdk/lib-dynamodb',
