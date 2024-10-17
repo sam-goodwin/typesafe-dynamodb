@@ -8,9 +8,9 @@ const project = new typescript.TypeScriptProject({
     'aws-sdk',
     '@aws-sdk/client-dynamodb',
     '@aws-sdk/lib-dynamodb',
-    '@aws-sdk/smithy-client',
     '@aws-sdk/types',
     '@aws-sdk/util-dynamodb',
+    '@smithy/smithy-client',
     '@types/aws-lambda',
   ],
   eslintOptions: {

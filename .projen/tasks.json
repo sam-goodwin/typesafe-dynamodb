@@ -227,13 +227,13 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/jest,@types/node,eslint-import-resolver-typescript,eslint-plugin-import,jest,projen,ts-jest,@aws-sdk/client-dynamodb,@aws-sdk/lib-dynamodb,@aws-sdk/smithy-client,@aws-sdk/types,@aws-sdk/util-dynamodb,@types/aws-lambda,aws-sdk"
+          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@types/jest,@types/node,eslint-import-resolver-typescript,eslint-plugin-import,jest,projen,ts-jest,@aws-sdk/client-dynamodb,@aws-sdk/lib-dynamodb,@aws-sdk/types,@aws-sdk/util-dynamodb,@smithy/smithy-client,@types/aws-lambda,aws-sdk"
         },
         {
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser commit-and-tag-version constructs eslint-import-resolver-typescript eslint-plugin-import eslint jest jest-junit projen ts-jest typescript @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb @aws-sdk/smithy-client @aws-sdk/types @aws-sdk/util-dynamodb @types/aws-lambda aws-sdk"
+          "exec": "yarn upgrade @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser commit-and-tag-version constructs eslint-import-resolver-typescript eslint-plugin-import eslint jest jest-junit projen ts-jest typescript @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb @aws-sdk/types @aws-sdk/util-dynamodb @smithy/smithy-client @types/aws-lambda aws-sdk"
         },
         {
           "exec": "npx projen"

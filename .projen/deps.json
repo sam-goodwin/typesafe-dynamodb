@@ -72,15 +72,15 @@
       "type": "peer"
     },
     {
-      "name": "@aws-sdk/smithy-client",
-      "type": "peer"
-    },
-    {
       "name": "@aws-sdk/types",
       "type": "peer"
     },
     {
       "name": "@aws-sdk/util-dynamodb",
+      "type": "peer"
+    },
+    {
+      "name": "@smithy/smithy-client",
       "type": "peer"
     },
     {
