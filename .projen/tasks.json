@@ -230,13 +230,13 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@types/jest,@types/node,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,jest,prettier,projen,ts-jest,ts-node,@aws-sdk/client-dynamodb,@aws-sdk/lib-dynamodb,@aws-sdk/types,@aws-sdk/util-dynamodb,@smithy/smithy-client,@types/aws-lambda"
+          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@types/jest,@types/node,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,jest,prettier,projen,ts-jest,ts-node,@aws-sdk/client-dynamodb,@aws-sdk/lib-dynamodb,@aws-sdk/types,@aws-sdk/util-dynamodb,@smithy/smithy-client,@types/aws-lambda,zod"
         },
         {
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser commit-and-tag-version constructs eslint-config-prettier eslint-import-resolver-typescript eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit prettier projen ts-jest ts-node typescript @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb @aws-sdk/types @aws-sdk/util-dynamodb @smithy/smithy-client @types/aws-lambda"
+          "exec": "yarn upgrade @types/jest @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser commit-and-tag-version constructs eslint-config-prettier eslint-import-resolver-typescript eslint-plugin-import eslint-plugin-prettier eslint jest jest-junit prettier projen ts-jest ts-node typescript @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb @aws-sdk/types @aws-sdk/util-dynamodb @smithy/smithy-client @types/aws-lambda zod"
         },
         {
           "exec": "npx projen"

@@ -58,6 +58,9 @@
     "@smithy/smithy-client": "^3.7.0",
     "@types/aws-lambda": "^8.10.155"
   },
+  "dependencies": {
+    "zod": "^4.1.12"
+  },
   "main": "lib/index.js",
   "license": "Apache-2.0",
   "publishConfig": {
