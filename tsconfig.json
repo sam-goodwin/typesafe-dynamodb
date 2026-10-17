@@ -25,10 +25,18 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "stripInternal": true,
-    "target": "ES2019"
+    "target": "ES2020",
+    "types": [
+      "aws-lambda",
+      "jest",
+      "node",
+      "aws-lambda"
+    ]
   },
   "include": [
     "src/**/*.ts"
   ],
-  "exclude": []
+  "exclude": [
+    "node_modules"
+  ]
 }
